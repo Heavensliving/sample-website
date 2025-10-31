@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 // 1. Import usePathname for determining the active page
 import { usePathname } from 'next/navigation'; 
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search } from "lucide-react"; // Note: Search is imported but not used, which is fine.
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
 
 const Navbar = () => {
@@ -34,7 +34,7 @@ const Navbar = () => {
     { name: "PRODUCTS", href: "/products" },
     { name: "COMPANY", href: "/company" },
     { name: "SUPPORT", href: "/support" },
-    { name: "CONTACTS", href: "/contacts" },
+    { name: "CONTACTS", href: "/contact" },
   ];
 
   // Helper function to check if a link is active
@@ -68,7 +68,10 @@ const Navbar = () => {
       animate={hidden ? "hidden" : "visible"}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8 h-20">
+      {/* --- MODIFIED LINE ---
+        Changed 'lg:px-4' back to 'lg:px-8' to add more padding on large screens.
+      */}
+      <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 h-20">
         {/* Logo */}
         <div className="flex-shrink-0 flex items-center">
            <Image
@@ -76,13 +79,13 @@ const Navbar = () => {
              alt="SSS Defence Logo"
              width={180}
              height={40}
-             className="h-8 md:h-10 w-auto"
+             className="h-7 md:h-10 w-auto"
              priority
            />
         </div>
 
-        {/* Desktop Menu - Centered */}
-        <div className="hidden md:flex flex-grow items-center justify-center">
+        {/* Desktop Menu - Right Aligned */}
+        <div className="hidden md:flex flex-grow items-center justify-end">
           <ul className="flex space-x-10">
             {navItems.map((item) => {
               const active = isActive(item.href); // Check active status using pathname
@@ -90,7 +93,6 @@ const Navbar = () => {
                 <li key={item.name} className="relative">
                   <Link
                     href={item.href} 
-                    // 3. Removed onClick handler for activeLink state update
                     className={`
                       ${active ? "text-white" : "text-gray-400"}
                       font-semibold hover:text-white transition-colors duration-200
@@ -122,12 +124,7 @@ const Navbar = () => {
           </ul>
         </div>
 
-         {/* Right Side Icons (Desktop) */}
-         <div className="hidden md:flex items-center space-x-4">
-           <button className="text-gray-400 hover:text-white transition-colors">
-             <Search size={20} />
-           </button>
-         </div>
+         {/* Search icon removed */}
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center">

@@ -29,7 +29,7 @@ const productCategories = [
     id: 'varaha',
     title: 'VARAHA',
     imagePath: '/products_images/varaha_product.png',
-    link: '/products/varaha',
+    link: '/varaha',
   },
 ];
 

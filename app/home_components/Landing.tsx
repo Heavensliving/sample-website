@@ -6,15 +6,9 @@ import { useEffect, useState } from "react";
 // --- Image Carousel Setup ---
 const heroImages = [
   '/Hero_images/hero_img_1.png',
-  // e.g., '/Hero_images/hero_img_2.png',
-  // e.g., '/Hero_images/hero_img_3.png',
+  '/Hero_images/hero_img_2.png',
+  '/Hero_images/hero_img_3.png',
 ];
-
-const carouselVariants = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1, transition: { duration: 1.5, ease: "easeInOut" } },
-  exit: { opacity: 0, transition: { duration: 1.5, ease: "easeInOut" } }
-} as const;
 
 // --- Animation Variants for Hero Text ---
 const textContainerVariants = {
@@ -24,6 +18,13 @@ const textContainerVariants = {
     transition: {
       staggerChildren: 0.15,
       delayChildren: 0.3,
+    }
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.1, // Stagger out faster
+      staggerDirection: -1 // Stagger out in reverse
     }
   }
 } as const;
@@ -78,17 +79,18 @@ export default function Landing() {
     };
   }, []);
 
-  useEffect(() => {
-    if (heroImages.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) =>
-          (prevIndex + 1) % heroImages.length
-        );
-      }, 5000);
-
-      return () => clearInterval(interval);
-    }
-  }, []);
+  // --- MODIFICATION: Auto-play is now disabled ---
+  // useEffect(() => {
+  //   if (heroImages.length > 1) {
+  //     const interval = setInterval(() => {
+  //       setCurrentIndex((prevIndex) =>
+  //         (prevIndex + 1) % heroImages.length
+  //       );
+  //     }, 5000);
+  //
+  //     return () => clearInterval(interval);
+  //   }
+  // }, []);
 
   useEffect(() => {
     // Show text with typing effect
@@ -126,6 +128,21 @@ export default function Landing() {
     }, 1000);
   };
 
+  // --- NEW: Navigation Functions ---
+  const nextSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation(); // Prevents createImpact from firing
+    setCurrentIndex((prevIndex) =>
+      (prevIndex + 1) % heroImages.length
+    );
+  };
+
+  const prevSlide = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation(); // Prevents createImpact from firing
+    setCurrentIndex((prevIndex) =>
+      (prevIndex - 1 + heroImages.length) % heroImages.length
+    );
+  };
+
   const text1 = "DEFENCE SYSTEMS";
   const text2 = "THAT DEFY ALL ODDS";
 
@@ -135,25 +152,36 @@ export default function Landing() {
       className="relative flex items-center justify-center h-[75vh] md:h-screen bg-black overflow-hidden cursor-pointer md:cursor-none"
       onClick={createImpact}
     >
-      {/* --- Hero Image Carousel --- */}
-      <AnimatePresence initial={false}>
-        <motion.div
-          key={currentIndex}
-          className="absolute inset-0 z-0"
-          variants={carouselVariants} 
-          initial="initial"
-          animate="animate"
-          exit="exit"
-        >
-          <img
-            src={heroImages[currentIndex]}
-            alt="Hero background"
-            className="w-full h-full object-cover"
-          />
-          {/* Dark overlay for text readability */}
-          <div className="absolute inset-0 bg-black opacity-60" />
-        </motion.div>
-      </AnimatePresence>
+      {/* --- MODIFIED Hero Image Carousel (Now Slides) --- */}
+      <motion.div
+        className="absolute inset-0 z-0 flex"
+        // Set width to (100% * number of images), e.g., '300%'
+        style={{ width: `${heroImages.length * 100}%` }}
+        // Animate the 'x' position based on the current index
+        // e.g., index 0: 0%, index 1: -33.33%, index 2: -66.66%
+        animate={{ x: `-${currentIndex * (100 / heroImages.length)}%` }}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+      >
+        {heroImages.map((src, index) => (
+          <div
+            key={index}
+            className="relative w-full h-full"
+            // Each image wrapper takes up its share of the container
+            // e.g., 1/3rd of '300%' is '100%' of the viewport
+            style={{ width: `${100 / heroImages.length}%` }}
+          >
+            <img
+              src={src}
+              alt="Hero background"
+              className="w-full h-full object-cover"
+            />
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-black opacity-60" />
+          </div>
+        ))}
+      </motion.div>
+      {/* --- END OF MODIFICATION --- */}
+
 
       {/* Muzzle Flash Effects */}
       {muzzleFlashes.map((flash) => (
@@ -350,38 +378,46 @@ export default function Landing() {
         </div>
       </div>
 
-      {/* --- Animated Product Text (Bottom Right) --- */}
-      <motion.div 
-        // RESPONSIVE CHANGE: Rescaled positioning (smaller on mobile)
-        className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 md:bottom-16 md:right-16 z-30 text-right text-white pointer-events-none"
-        variants={textContainerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.p
-          // RESPONSIVE CHANGE: Rescaled font
-          className="text-base sm:text-lg md:text-xl font-sans"
-          variants={textItemVariants}
-        >
-          9x19mm
-        </motion.p>
-        
-        <motion.h1
-          // RESPONSIVE CHANGE: Rescaled font
-          className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter -my-1 sm:-my-2"
-          variants={textItemVariants}
-        >
-          G72-P
-        </motion.h1>
+      {/* --- MODIFIED Animated Product Text (Bottom Right) --- */}
+      {/* --- Wrapped in AnimatePresence and conditionally rendered --- */}
+      <AnimatePresence>
+        {currentIndex === 0 && (
+          <motion.div 
+            // RESPONSIVE CHANGE: Rescaled positioning (smaller on mobile)
+            className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 md:bottom-16 md:right-16 z-30 text-right text-white pointer-events-none"
+            variants={textContainerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit" // Added exit prop
+          >
+            <motion.p
+              // RESPONSIVE CHANGE: Rescaled font
+              className="text-base sm:text-lg md:text-xl font-sans"
+              variants={textItemVariants}
+            >
+              9x19mm
+            </motion.p>
+            
+            <motion.h1
+              // RESPONSIVE CHANGE: Rescaled font
+              className="text-5xl sm:text-6xl md:text-8xl font-black tracking-tighter -my-1 sm:-my-2"
+              variants={textItemVariants}
+            >
+              G72-P
+            </motion.h1>
 
-        <motion.p
-          // RESPONSIVE CHANGE: Rescaled font
-          className="text-xl sm:text-2xl md:text-3xl font-mono tracking-[0.2em]"
-          variants={textItemVariants}
-        >
-          PISTOL
-        </motion.p>
-      </motion.div>
+            <motion.p
+              // RESPONSIVE CHANGE: Rescaled font
+              className="text-xl sm:text-2xl md:text-3xl font-mono tracking-[0.2em]"
+              variants={textItemVariants}
+            >
+              PISTOL
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* --- END OF MODIFICATION --- */}
+
 
       {/* Corner Targeting Brackets */}
       {[
@@ -409,6 +445,31 @@ export default function Landing() {
           transition={{ duration: 0.8, delay: 1.5 + i * 0.1 }}
         />
       ))}
+
+      {/* --- MODIFIED: Carousel Navigation --- */}
+      <div className="absolute top-1/2 -translate-y-1/2 w-full flex justify-between items-center px-4 md:px-8 z-40">
+        {/* Left Arrow Button */}
+        <button
+          onClick={prevSlide}
+          className="w-12 h-12 md:w-14 md:h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-black hover:bg-opacity-40 transition-all duration-300 cursor-pointer"
+          aria-label="Previous slide"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        
+        {/* Right Arrow Button */}
+        <button
+          onClick={nextSlide}
+          className="w-12 h-12 md:w-14 md:h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-black hover:bg-opacity-40 transition-all duration-300 cursor-pointer"
+          aria-label="Next slide"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
       
     </div>
   );

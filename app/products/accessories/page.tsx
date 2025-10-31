@@ -1,14 +1,11 @@
 "use client";
 
-import React, { useState, useEffect } from 'react'; // Kept for ParticlesBackground
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { motion, Variants, useScroll, useTransform } from 'framer-motion';
-// import Link from 'next/link'; // This import was unused
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import AmmunitionList from './Ammunitionlist';
-import AccessoriesExplore from './AccessoriesExplore';
-
-// --- AmmunitionGrid component definition removed from here ---
+import Navbar from '@/components/Navbar'; // Import Navbar
+import Footer from '@/components/Footer'; // Import Footer
+import VarahaHeroSection from './VarahaHeroSection';
 
 // --- Advanced Animation Variants ---
 const heroVariants: Variants = {
@@ -43,7 +40,7 @@ const titleVariants: Variants = {
   },
 };
 
-// Updated ParticlesBackground component
+// ParticlesBackground component (re-used)
 const ParticlesBackground = () => {
   const particles = Array.from({ length: 30 });
   const [isClient, setIsClient] = useState(false);
@@ -85,7 +82,7 @@ const ParticlesBackground = () => {
   );
 };
 
-// Tactical Grid Lines Background
+// Tactical Grid Lines Background (re-used)
 const TacticalGrid = () => (
   <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
     <svg width="100%" height="100%">
@@ -100,46 +97,22 @@ const TacticalGrid = () => (
   </div>
 );
 
-// Radar Sweep Effect (Definition remains, but it's no longer called)
-const RadarSweep = () => (
-  <motion.div
-    className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-    initial={{ rotate: 0, opacity: 0.3 }}
-    animate={{ rotate: 360, opacity: [0.3, 0.1, 0.3] }}
-    transition={{
-      duration: 8,
-      repeat: Infinity,
-      ease: "linear"
-    }}
-  >
-    <div className="absolute inset-0 rounded-full border border-red-600/20" />
-    <div className="absolute inset-4 rounded-full border border-red-600/20" />
-    <div className="absolute inset-8 rounded-full border border-red-600/20" />
-    <motion.div
-      className="absolute top-1/2 left-1/2 w-1/2 h-0.5 bg-gradient-to-r from-red-600/60 to-transparent origin-left"
-      style={{ transformOrigin: "left center" }}
-    />
-  </motion.div>
-);
-
-// Renamed component
-const AmmunitionPage: React.FC = () => {
+const AccessoriesPage: React.FC = () => {
   const { scrollYProgress } = useScroll();
   const heroScale = useTransform(scrollYProgress, [0, 0.3], [1, 1.2]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0.3]);
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col overflow-hidden">
-      {/* Tactical Grid Background */}
+      {/* Tactical Grid Background and Particles */}
       <TacticalGrid />
       <ParticlesBackground />
-      
-      {/* ✅ Navbar component is called here (from placeholder) */}
+
+      {/* Navbar */}
       <Navbar />
 
       <main className="flex-grow flex flex-col relative z-10">
-        
-        {/* ✅ --- HERO SECTION UPDATED --- */}
+        {/* HERO SECTION */}
         <section className="relative w-full h-[50vh] md:h-[65vh] lg:h-[80vh] overflow-hidden">
           <motion.div
             className="absolute inset-0"
@@ -151,14 +124,16 @@ const AmmunitionPage: React.FC = () => {
               animate="visible"
               className="relative w-full h-full"
             >
-              <img
-                src="/Ammunition/amunitionhme.jpg" 
-                alt="SSS Defence rifle, magazine, and ammunition on tactical foam"
-                className="absolute inset-0 w-full h-full object-cover brightness-[0.65] md:brightness-[0.75]"
-                onError={(e) => e.currentTarget.src = 'https://placehold.co/1920x1080/000000/FF0000?text=Ammunition+Hero'}
+              <Image
+                src="/products_images/accessories_product.png" // Landing section image path
+                alt="Tactical Accessories"
+                layout="fill"
+                objectFit="cover"
+                priority
+                className="brightness-[0.65] md:brightness-[0.75]"
               />
               
-              {/* ✅ UPDATED GRADIENT LINE */}
+              {/* Overlay gradient */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"
                 initial={{ opacity: 0 }}
@@ -168,7 +143,8 @@ const AmmunitionPage: React.FC = () => {
             </motion.div>
           </motion.div>
           
-           {[0, 2, 4].map((delay) => (
+          {/* Scan line effects */}
+          {[0, 2, 4].map((delay) => (
             <motion.div
               key={delay}
               className="absolute inset-0 pointer-events-none z-10"
@@ -186,19 +162,19 @@ const AmmunitionPage: React.FC = () => {
             </motion.div>
           ))}
           
-          <div className="absolute inset-0 flex items-center justify-center z-20">
+          {/* Text Overlay */}
+          <div className="absolute inset-0 flex items-end justify-center pb-12 sm:pb-24 lg:pb-32 z-20">
             <motion.div
               variants={titleVariants}
               initial="hidden"
               animate="visible"
               className="relative"
             >
-              {/* Updated hero title */}
               <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] text-white drop-shadow-2xl">
-                AMMUNITION
+                ACCESSORIES
               </h1>
               
-              {/* Glitch effect text */}
+              {/* Glitch effect */}
               <motion.div
                 className="absolute inset-0 text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] text-red-600 mix-blend-screen pointer-events-none"
                 animate={{
@@ -212,8 +188,7 @@ const AmmunitionPage: React.FC = () => {
                   repeatDelay: 4
                 }}
               >
-                {/* Updated hero title (glitch) */}
-                AMMUNITION
+                ACCESSORIES
               </motion.div>
               
               {/* Underline animation */}
@@ -227,15 +202,72 @@ const AmmunitionPage: React.FC = () => {
           </div>
         </section>
 
-        {/* ✅ Component is now imported and called */}
-        <AmmunitionList />
+        {/* Product Grid Section */}
+        <section className="container mx-auto px-4 py-16 md:py-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+            {/* AK Upgrade Kit */}
+            <motion.div 
+              className="relative bg-zinc-900/50 rounded-lg overflow-hidden group border border-zinc-800"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <Image
+                src="/Accessories/Ak.png" // Your image path
+                alt="AK Upgrade Kit"
+                width={700}
+                height={400}
+                layout="responsive"
+                objectFit="contain"
+                className="group-hover:scale-105 transition-transform duration-500 ease-in-out p-4"
+              />
+              {/* ✅ MODIFIED: Darker gradient */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/90 to-transparent p-4">
+                <h2 className="text-xl sm:text-2xl font-semibold text-white">AK Upgrade Kit</h2>
+                {/* ✅ REMOVED: Subtitle */}
+              </div>
+              {/* ✅ MODIFIED: Light black hover overlay, button removed */}
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {/* Button removed */}
+              </div>
+            </motion.div>
+
+            {/* Suppressors */}
+            <motion.div 
+              className="relative bg-zinc-900/50 rounded-lg overflow-hidden group border border-zinc-800"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Image
+                src="/Accessories/suprsr.png" // Your image path
+                alt="Suppressors"
+                width={700}
+                height={400}
+                layout="responsive"
+                objectFit="contain"
+                className="group-hover:scale-105 transition-transform duration-500 ease-in-out p-4"
+              />
+              {/* ✅ MODIFIED: Darker gradient */}
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/90 to-transparent p-4">
+                <h2 className="text-xl sm:text-2xl font-semibold text-white">Suppressors</h2>
+                {/* ✅ REMOVED: Subtitle */}
+              </div>
+              {/* ✅ MODIFIED: Light black hover overlay, button removed */}
+              <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {/* Button removed */}
+              </div>
+            </motion.div>
+          </div>
+        </section>
       </main>
 
-      <AccessoriesExplore />
-
+      <VarahaHeroSection />
       <Footer />
     </div>
   );
 };
 
-export default AmmunitionPage;
+export default AccessoriesPage;

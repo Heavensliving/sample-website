@@ -57,7 +57,7 @@ const AccessoriesExplore: React.FC = () => {
           ACCESSORIES 
         </h2>
         
-        <Link href="/accessories"> {/* ✅ Content updated */}
+        <Link href="/products/accessories"> 
           <motion.div
             // ✅ Use same smaller button style as reference
             className="mt-4 md:mt-6 py-2 px-8 text-white text-sm border border-white uppercase tracking-widest transition-all duration-300 hover:bg-white hover:text-black cursor-pointer"
