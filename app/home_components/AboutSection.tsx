@@ -676,7 +676,7 @@ const AboutSection: React.FC = () => {
   const [crosshairPosition, setCrosshairPosition] = useState({ x: 0, y: 0 });
   const [networkNodes, setNetworkNodes] = useState<Array<{ x: number; y: number; id: number }>>([]);
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.2 });
+  const isInView = useInView(ref, { amount: 0.2, once: true });
 
   // Generate random network nodes
   useEffect(() => {

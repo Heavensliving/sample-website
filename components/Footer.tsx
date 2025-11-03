@@ -47,10 +47,10 @@ const Footer = () => {
           <div className="lg:col-span-1"> 
             <h3 className="text-white text-xs font-bold uppercase mb-3 tracking-wider">PRODUCTS</h3> 
             <ul className="space-y-1.5 text-xs"> 
-              <li><a href="#" className="hover:text-white transition-colors">SMALL ARMS</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">AMMUNITION</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">ACCESSORIES</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">CUAS</a></li>
+              <li><a href="/products/smallarms" className="hover:text-white transition-colors">SMALL ARMS</a></li>
+              <li><a href="/products/ammunition" className="hover:text-white transition-colors">AMMUNITION</a></li>
+              <li><a href="/products/accessories" className="hover:text-white transition-colors">ACCESSORIES</a></li>
+              <li><a href="/varaha" className="hover:text-white transition-colors">CUAS</a></li>
             </ul>
           </div>
 
@@ -78,9 +78,9 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <h3 className="text-white text-xs font-bold uppercase mb-3 tracking-wider">CONTACTS</h3> 
             <ul className="space-y-1.5 text-xs">
-              <li><a href="#" className="hover:text-white transition-colors">INTERNATIONAL</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">MEDIA & PRESS</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">HQ</a></li>
+              <li><a href="/contact" className="hover:text-white transition-colors">INTERNATIONAL</a></li>
+              <li><a href="/contact" className="hover:text-white transition-colors">MEDIA & PRESS</a></li>
+              <li><a href="/contact" className="hover:text-white transition-colors">HQ</a></li>
             </ul>
           </div>
         </div>
