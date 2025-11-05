@@ -1,0 +1,146 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Open Asset Import Library (assimp v5.2.cf7d3637)"
+    },
+    "extensionsUsed": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 2250762,
+            "type": "VEC3",
+            "max": [
+                0.2256317138671875,
+                0.5,
+                0.22589111328125
+            ],
+            "min": [
+                -0.2256317138671875,
+                -0.5,
+                -0.22589111328125
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 2250762,
+            "type": "VEC2",
+            "max": [
+                0.97802734375,
+                1.0
+            ],
+            "min": [
+                0.000244140625,
+                0.0
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 2250762,
+            "type": "SCALAR",
+            "max": [
+                2250761
+            ],
+            "min": [
+                0
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 54018288,
+            "uri": "result.bin"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 27009144,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 27009144,
+            "byteLength": 18006096,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 45015240,
+            "byteLength": 9003048,
+            "target": 34963
+        }
+    ],
+    "images": [
+        {
+            "uri": "dome-texture.jpg"
+        }
+    ],
+    "materials": [
+        {
+            "name": "tripo_mat_13bf9ab1-d0a9-4729-8c12-a64d0bc33874",
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.5
+            },
+            "doubleSided": true
+        },
+        {
+            "name": "material"
+        }
+    ],
+    "meshes": [
+        {
+            "name": "tripo_mesh_13bf9ab1-d0a9-4729-8c12-a64d0bc33874",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 2,
+                    "attributes": {
+                        "POSITION": 0,
+                        "TEXCOORD_0": 1
+                    }
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "name": "tripo_node_13bf9ab1-d0a9-4729-8c12-a64d0bc33874",
+            "mesh": 0
+        }
+    ],
+    "samplers": [
+        {
+            "magFilter": 9729,
+            "minFilter": 9987
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "textures": [
+        {
+            "source": 0,
+            "sampler": 0
+        }
+    ],
+    "scene": 0
+}
