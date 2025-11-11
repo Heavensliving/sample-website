@@ -34,7 +34,7 @@ const Navbar = () => {
     { name: "PRODUCTS", href: "/products" },
     { name: "COMPANY", href: "/company" },
     { name: "SUPPORT", href: "/support" },
-    { name: "CONTACTS", href: "/contact" },
+    { name: "CONTACT", href: "/contact" },
   ];
 
   // Helper function to check if a link is active
