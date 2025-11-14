@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, {
@@ -37,8 +36,8 @@ type CameraMode = "cinematic" | "free";
 // ---------------- Config / Constants ----------------
 const DRONE_START_POS = new THREE.Vector3(-20, 15, 0);
 const DRONE_TRACK_POS = new THREE.Vector3(-2, 10, 0);
-const SENSOR_1_POS = new THREE.Vector3(5, 5, 5);
-const SENSOR_2_POS = new THREE.Vector3(5, 5, -5);
+const SENSOR_1_POS = new THREE.Vector3(15, 5, -14);
+const SENSOR_2_POS = new THREE.Vector3(15, 5, -24);
 const EFFECTOR_POS = new THREE.Vector3(8, 5, 0);
 const CONTROL_ROOM_POS = new THREE.Vector3(10, 5, 2);
 
@@ -172,7 +171,7 @@ const Dome: React.FC<DomeProps> = ({ stage, ...props }) => {
     <group ref={groupRef} {...props}>
       <primitive
         object={copiedScene}
-        scale={1.5}
+        scale={2.5}
         rotation={[Math.PI / 2, 0, 0]}
       />
       <pointLight color="#0755f0" intensity={2} distance={5} />
@@ -562,7 +561,7 @@ const SceneContent: React.FC<{
   cameraMode: CameraMode;
 }> = ({ stage, cameraMode }) => {
   const effectorBarrelPos = EFFECTOR_POS.clone().add(
-    new THREE.Vector3(0, 1.3, 1)
+    new THREE.Vector3(15, 5, -20)
   );
 
   return (
