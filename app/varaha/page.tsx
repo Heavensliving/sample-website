@@ -5270,7 +5270,7 @@ const ContentSections = memo(
 
         {/* Parallax Drone (z-30) */}
         <motion.div
-          className="absolute top-0 left-0 z-30 pointer-events-none w-64 sm:w-80"
+          className="fixed top-0 left-0 z-30 pointer-events-none w-64 sm:w-80"
           style={{
             x: smoothDroneX,
             y: smoothDroneY,
