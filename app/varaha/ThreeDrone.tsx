@@ -31,7 +31,7 @@ function DroneModel() {
       ref={modelRef}
       object={scene}
       // ✅ Adjusted scale and position to be viewable
-      scale={45}
+      scale={20}
       position={[0, 0, 0]}
     />
   );
