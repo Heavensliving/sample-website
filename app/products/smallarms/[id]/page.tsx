@@ -1027,6 +1027,7 @@ const RelatedProductsCarousel: React.FC<CarouselProps> = ({ products, currentPro
                 
                 const xOffset = position * (typeof window !== 'undefined' && window.innerWidth < 768 ? 120 : 280); // Tighter spacing on mobile
                 const scale = isCenter ? 1.2 : 1 - distance * 0.15;
+
                 const opacity = isCenter ? 1 : 0.3;
                 const zIndex = 50 - Math.abs(position);
                 const rotateY = position * -8;
@@ -1097,8 +1098,11 @@ const RelatedProductsCarousel: React.FC<CarouselProps> = ({ products, currentPro
                           }}
                         />
 
-                        {/* Image */}
-                        <div className="relative h-[75%] flex items-center justify-center p-4 md:p-8">
+                        <motion.div 
+                          className="relative flex items-center justify-center p-4 md:p-8"
+                          animate={{ height: isCenter ? '85%' : '75%' }} // Active image container is taller
+                          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                        >
                           <img
                             src={product.imagePath}
                             alt={product.name}
@@ -1112,10 +1116,13 @@ const RelatedProductsCarousel: React.FC<CarouselProps> = ({ products, currentPro
                               transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
                             />
                           )}
-                        </div>
+                        </motion.div>
 
-                        {/* Name section */}
-                        <div className="relative h-[25%] flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm border-t border-red-500/30">
+                        <motion.div 
+                          className="relative flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm border-t border-red-500/30"
+                          animate={{ height: isCenter ? '15%' : '25%' }} // Active name container is shorter
+                          transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                        >
                           <div className="text-center">
                             <h3 className={`font-bold uppercase tracking-wider transition-all duration-300 ${
                               isCenter 
@@ -1134,7 +1141,7 @@ const RelatedProductsCarousel: React.FC<CarouselProps> = ({ products, currentPro
                               />
                             )}
                           </div>
-                        </div>
+                        </motion.div>
 
                         {isCenter && (
                           <>
@@ -1196,15 +1203,28 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
   const resolvedParams = use(params as any) as { id: string };
   const productId = parseInt(resolvedParams.id, 10);
   
-  // This 'smallArms' variable is now the one imported from './data.ts'
   const product = smallArms.find(p => p.id === productId);
   const relatedProducts = smallArms.filter(p => p.id !== productId);
 
   const [viewMode, setViewMode] = useState<'3d' | 'image'>('3d');
+  
+  // --- START: VARIANT STATE ---
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  // --- END: VARIANT STATE ---
 
   if (!product) {
     return <NotFoundComponent />;
   }
+  
+  // --- START: VARIANT LOGIC ---
+  // Check if this product has variants
+  const hasVariants = product.variants && product.variants.length > 0;
+  
+  // Determine which data to display (either the variant or the product itself)
+  const displayData = hasVariants 
+    ? product.variants![selectedVariantIndex] 
+    : product;
+  // --- END: VARIANT LOGIC ---
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-black">
@@ -1221,11 +1241,12 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
           <div className="relative min-h-screen flex items-center justify-center px-4 md:px-6 py-20">
             <div className="w-full max-w-7xl">
               
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-start pt-28 lg:pt-20"> 
+              <div className="grid grid-cols-1 gap-8 lg:gap-12 pt-28 lg:pt-20"> 
                 
-                {/* --- 3D Model / Image (Left) --- */}
+                {/* --- 3D Model / Image --- */}
+                {/* Mobile: order-2 (after name/caliber), LG: order-1 (top) */}
                 <motion.div
-                  className="lg:col-span-5 lg:row-span-2 order-2 lg:order-1"
+                  className="order-2 lg:order-1"
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
@@ -1248,7 +1269,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                       ))}
                     </div>
 
-                    {/* --- FIX 1: Removed backdrop-blur-sm --- */}
                     <div className="relative h-[400px] sm:h-[500px] md:h-[700px] rounded-2xl overflow-hidden bg-black/20">
                       
                       {viewMode === '3d' ? (
@@ -1297,7 +1317,6 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                               </Suspense>
                               
                               <OrbitControls 
-                                // --- FIX 2: Enabled Zoom ---
                                 enableZoom={true} 
                                 enablePan={false}
                                 autoRotate
@@ -1343,13 +1362,48 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                   </div>
                 </motion.div>
 
-                {/* --- Product Info (Name & Caliber) --- */}
+                {/* --- Product Info (Name) --- */}
+                {/* Mobile: order-1 (top), LG: order-2 (below image) */}
                 <motion.div
-                  className="lg:col-span-7 lg:col-start-6 lg:row-start-1 space-y-8 order-1 lg:order-2"
+                  className="order-1 lg:order-2"
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.8, delay: 0.3 }}
                 >
+                  
+                  {/* --- START: VARIANT TABS --- */}
+                  {hasVariants && (
+                    <motion.div 
+                      className="mb-8 flex items-center gap-2 border border-white/20 p-1 rounded-lg"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      {product.variants!.map((variant, index) => (
+                        <button
+                          key={variant.name}
+                          onClick={() => setSelectedVariantIndex(index)}
+                          className={`relative w-full py-3 px-4 rounded-md text-sm sm:text-base font-mono uppercase tracking-wider transition-colors ${
+                            selectedVariantIndex === index 
+                              ? 'text-white' 
+                              : 'text-gray-500 hover:text-gray-300'
+                          }`}
+                        >
+                          {selectedVariantIndex === index && (
+                            <motion.div
+                              layoutId="activeVariantTab"
+                              className="absolute inset-0 bg-red-600/50 border border-red-500 rounded-lg"
+                              style={{ borderRadius: 6 }}
+                              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            />
+                          )}
+                          <span className="relative z-10">{variant.name}</span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                  {/* --- END: VARIANT TABS --- */}
+                  
                   <div>
                     <motion.h1
                       className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase text-white mb-4 relative" // Responsive text
@@ -1357,6 +1411,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
                     >
+                      {/* Displays the main product name, not the variant name */}
                       {product.name.split(' ').map((word, i) => (
                         <motion.div
                           key={i}
@@ -1377,29 +1432,13 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                       transition={{ delay: 1, duration: 0.8 }}
                     />
                   </div>
-
-                  <motion.div
-                    className="relative"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9 }}
-                  >
-                    <div className="absolute -left-4 top-0 bottom-0 w-1 bg-red-600" />
-                    <div className="pl-6">
-                      <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">
-                        Caliber
-                      </div>
-                      <div className="text-2xl sm:text-3xl font-bold text-red-500 font-mono tracking-wider"> {/* Responsive text */}
-                        {product.spec}
-                      </div>
-                    </div>
-                  </motion.div>
                 </motion.div>
                 
-                {/* --- Product Description --- */}
-                {product.description && (
+                {/* --- Product Description (Uses displayData) --- */}
+                {/* Mobile: order-3 (after image), LG: order-3 (below name) */}
+                {displayData.description && (
                   <motion.div
-                    className="lg:col-span-7 lg:col-start-6 lg:row-start-2 order-3"
+                    className="order-3 lg:order-3"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
@@ -1409,18 +1448,40 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                     >
                       <div className="absolute top-0 left-0 w-full h-full border-2 border-red-500/0 rounded-lg transition-all duration-300 hover:border-red-500/30" />
                       <p className="text-gray-300 text-sm md:text-base leading-relaxed relative z-10">
-                        {product.description}
+                        {displayData.description}
                       </p>
                     </div>
                   </motion.div>
                 )}
 
+                {/* --- Product Info (Caliber - uses main product.spec) --- */}
+                {/* Mobile: order-1 (top, with name), LG: order-4 (bottom) */}
+                <motion.div
+                  className="order-1 lg:order-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.9 }}
+                >
+                  <div className="relative">
+                    <div className="absolute -left-4 top-0 bottom-0 w-1 bg-red-600" />
+                    <div className="pl-6">
+                      <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">
+                        Caliber
+                      </div>
+                      <div className="text-2xl sm:text-3xl font-bold text-red-500 font-mono tracking-wider"> {/* Responsive text */}
+                        {product.spec}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+                {/* --- END: MODIFIED GRID --- */}
+
               </div>
             </div>
           </div>
 
-          {/* Technical Specifications Section */}
-          {product.features && product.features.length > 0 && (
+          {/* Technical Specifications Section (Uses displayData) */}
+          {displayData.features && displayData.features.length > 0 && (
             <div className="relative py-20 px-4 md:px-6">
               <div className="max-w-7xl mx-auto">
                 
@@ -1445,7 +1506,7 @@ const ProductDetailPage: React.FC<ProductDetailPageProps> = ({ params }) => {
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {product.features.map((feature, index) => (
+                  {displayData.features.map((feature, index) => (
                     <motion.div
                       key={feature.key}
                       className="group relative"

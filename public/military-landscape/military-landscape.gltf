@@ -1,0 +1,189 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Open Asset Import Library (assimp v5.4.0)"
+    },
+    "extensionsUsed": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 642992,
+            "type": "VEC3",
+            "max": [
+                0.435516357421875,
+                0.149932861328125,
+                0.5
+            ],
+            "min": [
+                -0.435516357421875,
+                -0.149932861328125,
+                -0.5
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 642992,
+            "type": "VEC3",
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 642992,
+            "type": "VEC2",
+            "max": [
+                1.0,
+                0.999755859375
+            ],
+            "min": [
+                0.000244140625,
+                0.0
+            ]
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 3000498,
+            "type": "SCALAR",
+            "max": [
+                642991
+            ],
+            "min": [
+                0
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 32577736,
+            "uri": "military-landscape_0.bin"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 7715904,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 7715904,
+            "byteLength": 7715904,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 15431808,
+            "byteLength": 5143936,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 20575744,
+            "byteLength": 12001992,
+            "target": 34963
+        }
+    ],
+    "images": [
+        {
+            "uri": "textures/image_0.png"
+        }
+    ],
+    "materials": [
+        {
+            "name": "tripo_node_ee30fea4-f9b6-4984-8b11-5713803907c0_material",
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.5
+            },
+            "doubleSided": true
+        }
+    ],
+    "meshes": [
+        {
+            "name": "meshes[0].meshes[0].meshes[0].meshes[0]",
+            "primitives": [
+                {
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 3,
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    }
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "name": "military-landscape",
+            "children": [
+                1
+            ]
+        },
+        {
+            "name": "root",
+            "children": [
+                2
+            ],
+            "extras": {
+                "name": "root"
+            }
+        },
+        {
+            "name": "tripo_node_ee30fea4-f9b6-4984-8b11-5713803907c0",
+            "mesh": 0,
+            "extras": {
+                "name": "tripo_node_ee30fea4-f9b6-4984-8b11-5713803907c0",
+                "modelInfo": {
+                    "triangles": 1000166,
+                    "vertices": 533880
+                }
+            }
+        }
+    ],
+    "samplers": [
+        {
+            "magFilter": 9729,
+            "minFilter": 9729
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "textures": [
+        {
+            "source": 0,
+            "sampler": 0
+        }
+    ],
+    "scene": 0
+}

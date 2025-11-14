@@ -1,0 +1,285 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Open Asset Import Library (assimp v5.4.0)"
+    },
+    "extensionsUsed": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 57,
+            "type": "VEC3",
+            "max": [
+                0.382568359375,
+                0.1724090576171875,
+                0.488189697265625
+            ],
+            "min": [
+                -0.36090087890625,
+                -0.034030914306640625,
+                -0.3507080078125
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 57,
+            "type": "VEC3",
+            "max": [
+                0.9954645037651062,
+                1.0,
+                0.6329106092453003
+            ],
+            "min": [
+                -0.9677542448043823,
+                -0.9861491918563843,
+                -0.9931116700172424
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 57,
+            "type": "VEC2",
+            "max": [
+                0.981201171875,
+                0.931884765625
+            ],
+            "min": [
+                0.252197265625,
+                0.135498046875
+            ]
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 60,
+            "type": "SCALAR",
+            "max": [
+                56
+            ],
+            "min": [
+                0
+            ]
+        },
+        {
+            "bufferView": 4,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 328544,
+            "type": "VEC3",
+            "max": [
+                0.393157958984375,
+                0.1819610595703125,
+                0.5
+            ],
+            "min": [
+                -0.393157958984375,
+                -0.1819610595703125,
+                -0.5
+            ]
+        },
+        {
+            "bufferView": 5,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 328544,
+            "type": "VEC3",
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ]
+        },
+        {
+            "bufferView": 6,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 328544,
+            "type": "VEC2",
+            "max": [
+                0.999755859375,
+                0.99951171875
+            ],
+            "min": [
+                0.0,
+                0.0029296875
+            ]
+        },
+        {
+            "bufferView": 7,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 1892202,
+            "type": "SCALAR",
+            "max": [
+                328543
+            ],
+            "min": [
+                0
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 18084280,
+            "uri": "drone-3d-model_0.bin"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 684,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 684,
+            "byteLength": 684,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1368,
+            "byteLength": 456,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 1824,
+            "byteLength": 240,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 2064,
+            "byteLength": 3942528,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 3944592,
+            "byteLength": 3942528,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 7887120,
+            "byteLength": 2628352,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 10515472,
+            "byteLength": 7568808,
+            "target": 34963
+        }
+    ],
+    "images": [
+        {
+            "uri": "textures/image_0.png"
+        }
+    ],
+    "materials": [
+        {
+            "name": "tripo_node_83bdbbc3-c505-44c8-bd54-4f029a8008d0_material",
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.5
+            },
+            "doubleSided": true
+        }
+    ],
+    "meshes": [
+        {
+            "name": "meshes[0]",
+            "primitives": [
+                {
+                    "mode": 1,
+                    "material": 0,
+                    "indices": 3,
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    }
+                },
+                {
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 7,
+                    "attributes": {
+                        "POSITION": 4,
+                        "NORMAL": 5,
+                        "TEXCOORD_0": 6
+                    }
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "name": "drone-3d-model",
+            "children": [
+                1
+            ]
+        },
+        {
+            "name": "root",
+            "children": [
+                2
+            ],
+            "extras": {
+                "name": "root"
+            }
+        },
+        {
+            "name": "tripo_node_83bdbbc3-c505-44c8-bd54-4f029a8008d0",
+            "mesh": 0,
+            "extras": {
+                "name": "tripo_node_83bdbbc3-c505-44c8-bd54-4f029a8008d0",
+                "modelInfo": {
+                    "triangles": 630764,
+                    "vertices": 328544
+                }
+            }
+        }
+    ],
+    "samplers": [
+        {
+            "magFilter": 9729,
+            "minFilter": 9729
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "textures": [
+        {
+            "source": 0,
+            "sampler": 0
+        }
+    ],
+    "scene": 0
+}

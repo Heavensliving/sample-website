@@ -13,8 +13,8 @@ const smallArms = [
   { id: 4, name: 'P72 ASSAULT', spec: '7.62 x 39mm', imagePath: '/small_arms/P72 ASSAULT.png' },
   { id: 5, name: 'T72 DMR/ASSAULT RIFLE', spec: '7.62 x 51mm', imagePath: '/small_arms/DMRASSAULT.png' },
   { id: 6, name: 'RAPTOR', spec: '.300 Blackout', imagePath: '/small_arms/RAPTOR.png' },
-  { id: 7, name: 'G72 SMC & CSMC', spec: '9 x 19mm', imagePath: '/small_arms/SMC & CSMC.png' },
-  { id: 8, name: 'C72 P', spec: '9 x 19mm', imagePath: '/small_arms/C72 P.png' },
+  { id: 7, name: 'G72 SMG & CSMG', spec: '9 x 19mm', imagePath: '/small_arms/SMC & CSMC.png' },
+  { id: 8, name: 'G72 P', spec: '9 x 19mm', imagePath: '/small_arms/C72 P.png' },
 ];
 
 // --- Animation Variants ---

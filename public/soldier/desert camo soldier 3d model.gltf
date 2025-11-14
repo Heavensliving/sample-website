@@ -1,0 +1,285 @@
+{
+    "asset": {
+        "version": "2.0",
+        "generator": "Open Asset Import Library (assimp v5.4.0)"
+    },
+    "extensionsUsed": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 19,
+            "type": "VEC3",
+            "max": [
+                0.1478118896484375,
+                0.31402587890625,
+                0.1418304443359375
+            ],
+            "min": [
+                -0.09597015380859375,
+                -0.3818359375,
+                -0.042789459228515625
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 19,
+            "type": "VEC3",
+            "max": [
+                0.9969143271446228,
+                0.9974676370620728,
+                0.943479061126709
+            ],
+            "min": [
+                -0.9558126926422119,
+                -0.29227331280708313,
+                -0.4954490065574646
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 19,
+            "type": "VEC2",
+            "max": [
+                0.972900390625,
+                0.957763671875
+            ],
+            "min": [
+                0.021240234375,
+                0.037841796875
+            ]
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 24,
+            "type": "SCALAR",
+            "max": [
+                18
+            ],
+            "min": [
+                0
+            ]
+        },
+        {
+            "bufferView": 4,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 291342,
+            "type": "VEC3",
+            "max": [
+                0.162384033203125,
+                0.5,
+                0.16290283203125
+            ],
+            "min": [
+                -0.162384033203125,
+                -0.5,
+                -0.16290283203125
+            ]
+        },
+        {
+            "bufferView": 5,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 291342,
+            "type": "VEC3",
+            "max": [
+                1.0,
+                0.9996901154518127,
+                1.0
+            ],
+            "min": [
+                -1.0,
+                -0.9999690055847168,
+                -1.0
+            ]
+        },
+        {
+            "bufferView": 6,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 291342,
+            "type": "VEC2",
+            "max": [
+                1.0,
+                0.999755859375
+            ],
+            "min": [
+                0.0,
+                0.00439453125
+            ]
+        },
+        {
+            "bufferView": 7,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 1698696,
+            "type": "SCALAR",
+            "max": [
+                291341
+            ],
+            "min": [
+                0
+            ]
+        }
+    ],
+    "buffers": [
+        {
+            "byteLength": 16118432,
+            "uri": "desert camo soldier 3d model_0.bin"
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 228,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 228,
+            "byteLength": 228,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 456,
+            "byteLength": 152,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 608,
+            "byteLength": 96,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 704,
+            "byteLength": 3496104,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 3496808,
+            "byteLength": 3496104,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 6992912,
+            "byteLength": 2330736,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 9323648,
+            "byteLength": 6794784,
+            "target": 34963
+        }
+    ],
+    "images": [
+        {
+            "uri": "textures/image_0.png"
+        }
+    ],
+    "materials": [
+        {
+            "name": "tripo_node_02f4858c-3bf3-4b8a-a2c4-527e2dc2bbfa_material",
+            "pbrMetallicRoughness": {
+                "baseColorTexture": {
+                    "index": 0
+                },
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.5
+            },
+            "doubleSided": true
+        }
+    ],
+    "meshes": [
+        {
+            "name": "meshes[0]",
+            "primitives": [
+                {
+                    "mode": 1,
+                    "material": 0,
+                    "indices": 3,
+                    "attributes": {
+                        "POSITION": 0,
+                        "NORMAL": 1,
+                        "TEXCOORD_0": 2
+                    }
+                },
+                {
+                    "mode": 4,
+                    "material": 0,
+                    "indices": 7,
+                    "attributes": {
+                        "POSITION": 4,
+                        "NORMAL": 5,
+                        "TEXCOORD_0": 6
+                    }
+                }
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "name": "desert camo soldier 3d model",
+            "children": [
+                1
+            ]
+        },
+        {
+            "name": "root",
+            "children": [
+                2
+            ],
+            "extras": {
+                "name": "root"
+            }
+        },
+        {
+            "name": "tripo_node_02f4858c-3bf3-4b8a-a2c4-527e2dc2bbfa",
+            "mesh": 0,
+            "extras": {
+                "name": "tripo_node_02f4858c-3bf3-4b8a-a2c4-527e2dc2bbfa",
+                "modelInfo": {
+                    "triangles": 566244,
+                    "vertices": 291342
+                }
+            }
+        }
+    ],
+    "samplers": [
+        {
+            "magFilter": 9729,
+            "minFilter": 9729
+        }
+    ],
+    "scenes": [
+        {
+            "nodes": [
+                0
+            ]
+        }
+    ],
+    "textures": [
+        {
+            "source": 0,
+            "sampler": 0
+        }
+    ],
+    "scene": 0
+}
