@@ -146,7 +146,7 @@ const TermsPage: React.FC = () => {
               className="relative"
             >
               {/* 🎯 CHANGED: Reduced font sizes */}
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] text-white drop-shadow-2xl text-center">
+              <h1 className="text-xl sm:text-5xl md:text-6xl lg:text-7xl font-black uppercase tracking-[0.1em] sm:tracking-[0.2em] text-white drop-shadow-2xl text-center">
                 TERMS & <br className="md:hidden" /> CONDITIONS
               </h1>
               
