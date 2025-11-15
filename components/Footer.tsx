@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import Link from 'next/link'; // 1. Import Link
 
 const Footer = () => {
   // Define animation props for the content wrapper
@@ -14,7 +15,6 @@ const Footer = () => {
 
   return (
     <footer 
-      // ✅ FIX: Changed py-10 to pt-20 pb-10 to increase top padding
       className="bg-black text-gray-400 pt-30 pb-10 px-4 sm:px-6 lg:px-8 xl:px-16 2xl:px-24" 
     >
       {/* 2. Added motion.div wrapper for content animation */}
@@ -60,7 +60,6 @@ const Footer = () => {
             <ul className="space-y-1.5 text-xs"> 
               <li><a href="#" className="hover:text-white transition-colors">ABOUT US</a></li>
               <li><a href="#" className="hover:text-white transition-colors">WHAT WE DO</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">NEWS & EVENTS</a></li>
             </ul>
           </div>
 
@@ -69,7 +68,6 @@ const Footer = () => {
             <h3 className="text-white text-xs font-bold uppercase mb-3 tracking-wider">SUPPORT</h3> 
             <ul className="space-y-1.5 text-xs"> 
               <li><a href="#" className="hover:text-white transition-colors">CATALOGS</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">WARRANTY</a></li>
               <li><a href="#" className="hover:text-white transition-colors">SERVICES</a></li>
             </ul>
           </div>
@@ -90,7 +88,13 @@ const Footer = () => {
 
         {/* Terms & Legal */}
         <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-2 sm:space-y-0">
-          <p className="text-gray-500 hover:text-white transition-colors cursor-pointer">Terms & Condition</p>
+          {/* 🎯 2. Replaced <p> with <Link> and added href */}
+          <Link 
+            href="/terms-and-conditions" 
+            className="text-gray-500 hover:text-white transition-colors"
+          >
+            Terms & Condition
+          </Link>
           <p className="text-gray-500 hover:text-white transition-colors cursor-pointer">Legal Terms</p>
         </div>
       </motion.div>
