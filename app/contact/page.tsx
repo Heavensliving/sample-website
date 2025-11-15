@@ -671,19 +671,45 @@ export default function ContactPage() {
     try {
       if (Object.keys(newErrors).length === 0) {
         console.log("Form Submitted:", formData);
-        emailjs
-          .sendForm("service_nhkz4np", "template_z2f1o1k", form.current, {
-            publicKey: "ZHLTFooOLy2oz7mPh",
-          })
-          .then(
-            (result) => {
-              setFormSubmitted(true);
-              setIsSubmitting(false);
-            },
-            (error) => {
-              alert("An error occurred: " + error.text);
-            }
-          );
+        if (formData?.enquiryType === "Sales") {
+          emailjs
+            .sendForm(
+              process.env.NEXT_PUBLIC_EMAILJS_SALES_SERVICE_ID!,
+              process.env.NEXT_PUBLIC_EMAILJS_SALES_TEMPLATE_ID!,
+              form.current!,
+              {
+                publicKey: process.env.NEXT_PUBLIC_EMAILJS_SALES_PUBLIC_KEY!,
+              }
+            )
+            .then(
+              (result) => {
+                setFormSubmitted(true);
+                setIsSubmitting(false);
+              },
+              (error) => {
+                alert("An error occurred: " + error.text);
+              }
+            );
+        } else {
+          emailjs
+            .sendForm(
+              process.env.NEXT_PUBLIC_EMAILJS_MEDIA_SERVICE_ID!,
+              process.env.NEXT_PUBLIC_EMAILJS_MEDIA_TEMPLATE_ID!,
+              form.current!,
+              {
+                publicKey: process.env.NEXT_PUBLIC_EMAILJS_MEDIA_PUBLIC_KEY!,
+              }
+            )
+            .then(
+              (result) => {
+                setFormSubmitted(true);
+                setIsSubmitting(false);
+              },
+              (error) => {
+                alert("An error occurred: " + error.text);
+              }
+            );
+        }
 
         setTimeout(() => {
           setFormSubmitted(false);
