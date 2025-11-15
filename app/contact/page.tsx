@@ -566,6 +566,7 @@ type formData = {
   phone: string;
   organization: string;
   purpose: string;
+  enquiryType: string;
   isGov: string; // ← FIXED
   message: string;
   confirmAccuracy: boolean;
@@ -586,6 +587,7 @@ export default function ContactPage() {
     phone: "",
     organization: "",
     purpose: "",
+    enquiryType: "",
     isGov: "",
     message: "",
     confirmAccuracy: false,
@@ -600,10 +602,10 @@ export default function ContactPage() {
 
   // --- MODIFIED handleChange ---
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
-    const fieldName = name as keyof FormData;
+    const fieldName = name as keyof formData;
 
     if (type === "checkbox") {
       const { checked } = e.target as HTMLInputElement;
@@ -660,6 +662,12 @@ export default function ContactPage() {
     const newErrors = validateForm();
     setErrors(newErrors);
     setIsSubmitting(true);
+
+    if (!form.current) {
+      console.error("Form reference is null");
+      return;
+    }
+
     try {
       if (Object.keys(newErrors).length === 0) {
         console.log("Form Submitted:", formData);
@@ -685,6 +693,7 @@ export default function ContactPage() {
             phone: "",
             organization: "",
             purpose: "",
+            enquiryType: "",
             isGov: "",
             message: "",
             confirmAccuracy: false,
