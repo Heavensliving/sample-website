@@ -1,5 +1,3 @@
-
-
 // "use client";
 
 // import React, { useState, useEffect, FormEvent, ChangeEvent } from 'react';
@@ -220,7 +218,7 @@
 //           background-position: center;
 //           background-repeat: no-repeat;
 //         }
-        
+
 //         {/* --- MODIFIED --- Removed red border, but kept red border for focus on error */}
 //         .custom-radio.error,
 //         .custom-checkbox.error {
@@ -370,9 +368,9 @@
 //                   <label htmlFor="phone" className="block text-sm text-gray-300 mb-2">Phone No.*</label>
 //                   <input
 //                     type="tel" // Keep type="tel" for mobile keyboards
-//                     id="phone" 
+//                     id="phone"
 //                     name="phone"
-//                     value={formData.phone} 
+//                     value={formData.phone}
 //                     onChange={handleChange}
 //                     className={`w-full bg-black rounded-md p-3 text-white ${fieldStateClasses('phone')}`}
 //                   />
@@ -473,7 +471,6 @@
 //                 {errors.confirmContact && <p className="text-red-500 text-xs -mt-3 ml-8">{errors.confirmContact}</p>}
 //               </div>
 
-
 //               {/* --- Submit Button (Unchanged) --- */}
 //               <div className="text-center pt-6 opacity-0 animate-fadeInUp" style={{ animationDelay: '900ms', animationFillMode: 'forwards' }}>
 //                 <button
@@ -563,6 +560,18 @@ const titleVariants: Variants = {
   },
 };
 
+type formData = {
+  name: string;
+  email: string;
+  phone: string;
+  organization: string;
+  purpose: string;
+  isGov: string; // ← FIXED
+  message: string;
+  confirmAccuracy: boolean;
+  confirmContact: boolean;
+};
+
 // --- Page Component ---
 
 export default function ContactPage() {
@@ -571,7 +580,7 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useRef<HTMLFormElement>(null);
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<formData>({
     name: "",
     email: "",
     phone: "",
@@ -771,12 +780,16 @@ export default function ContactPage() {
           border-color: #dc2626; /* Use red border on focus */
           outline: none;
         }
-        .custom-radio { border-radius: 50%; }
+        .custom-radio {
+          border-radius: 50%;
+        }
         .custom-radio:checked {
           border-color: #dc2626;
           background-image: radial-gradient(#dc2626 55%, transparent 60%);
         }
-        .custom-checkbox { border-radius: 3px; }
+        .custom-checkbox {
+          border-radius: 3px;
+        }
         .custom-checkbox:checked {
           background-color: #dc2626;
           border-color: #dc2626;
@@ -810,7 +823,7 @@ export default function ContactPage() {
           background-size: 1.25em 1.25em;
           padding-right: 2.5rem; /* Make room for the arrow */
         }
-        
+
         /* Fix for Firefox not hiding the default arrow */
         select::-ms-expand {
           display: none;
@@ -1074,23 +1087,41 @@ export default function ContactPage() {
                 </div>
 
                 {/* 🎯 7. Added the new dropdown field */}
-                <div className="md:col-span-2 opacity-0 animate-fadeInUp" style={{ animationDelay: '750ms', animationFillMode: 'forwards' }}>
-                  <label htmlFor="enquiryType" className="block text-sm text-gray-300 mb-2">Where you need to connect*</label>
+                <div
+                  className="md:col-span-2 opacity-0 animate-fadeInUp"
+                  style={{
+                    animationDelay: "750ms",
+                    animationFillMode: "forwards",
+                  }}
+                >
+                  <label
+                    htmlFor="enquiryType"
+                    className="block text-sm text-gray-300 mb-2"
+                  >
+                    Where you need to connect*
+                  </label>
                   <select
                     id="enquiryType"
                     name="enquiryType"
                     value={formData.enquiryType}
                     onChange={handleChange}
                     required // Use 'invalid' state for placeholder color
-                    className={`custom-select w-full bg-black rounded-md p-3 text-white ${fieldStateClasses('enquiryType')}`}
+                    className={`custom-select w-full bg-black rounded-md p-3 text-white ${fieldStateClasses(
+                      "enquiryType"
+                    )}`}
                   >
-                    <option value="" disabled>Select an option...</option>
+                    <option value="" disabled>
+                      Select an option...
+                    </option>
                     <option value="Sales">Sales</option>
                     <option value="Media">Media</option>
                   </select>
-                  {errors.enquiryType && <p className="text-red-500 text-xs mt-1">{errors.enquiryType}</p>}
+                  {errors.enquiryType && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.enquiryType}
+                    </p>
+                  )}
                 </div>
-
               </div>
 
               {/* --- Radio Button Section (Unchanged) --- */}

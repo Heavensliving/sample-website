@@ -4479,7 +4479,14 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
                 {/* Button 1: Explore Capabilities */}
                 <motion.button
                   className="relative overflow-hidden px-6 py-3 border-2 border-blue-500 text-blue-300 font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(59,100,246,0.5)]"
-                  onClick={() => router.push("/")}
+                  onClick={() => {
+                    const link = document.createElement("a");
+                    link.href = "/downloadable/VARAHA - Brochure.pdf"; // <-- Correct public path
+                    link.download = "VARAHA - Brochure.pdf"; // <-- Force download
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
