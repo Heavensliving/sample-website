@@ -4315,6 +4315,7 @@ import EarthCanvas from "./earthCanvas";
 import DomeCanvas from "./domeCanvas";
 import DetectionSequenceSection from "./DetectionSequenceSection";
 import ThreeDrone from "./ThreeDrone";
+import Link from "next/link";
 
 // --- Text Content (Unchanged) ---
 const title = "VARAHA";
@@ -4494,13 +4495,13 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
                       ease: "linear",
                     }}
                   />
-                  <span className="relative z-10">Explore Capabilities</span>
+                  <span className="relative z-10">Download Brochure</span>
                 </motion.button>
 
                 {/* Button 2: Request Demo */}
                 <motion.button
                   className="relative overflow-hidden px-6 py-3 bg-blue-600 text-white font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(59,100,246,0.5)] border-2 border-blue-600 hover:border-blue-500"
-                  onClick={() => router.push("/request-demo")}
+                  onClick={() => router.push("/contact")}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -5171,45 +5172,69 @@ const ContentSections = memo(
 
     const dronePathLength = useTransform(
       scrollYProgress,
-      [0.1, 0.9], // Start/end points of the animation
-      [0, pathLength] // Map to 0 -> total path length
+      [0.1, 0.9],
+      [0, pathLength]
     );
 
-    // --- Drone Smoothing (Unchanged) ---
+    // --- Drone Position Logic ---
+    // These will store the drone's final *on-screen pixel* coordinates
     const droneX = useMotionValue(95);
     const droneY = useMotionValue(5);
-    const springConfig = { stiffness: 40, damping: 20 };
-    const smoothDroneX = useSpring(droneX, springConfig);
-    const smoothDroneY = useSpring(droneY, springConfig);
 
+    // Smooth the pixel values
+    const smoothDroneX = useSpring(droneX, {
+      stiffness: 100,
+      damping: 30,
+    });
+    const smoothDroneY = useSpring(droneY, {
+      stiffness: 100,
+      damping: 30,
+    });
+
+    // This effect recalculates the drone's *screen* position on scroll
     useLayoutEffect(() => {
-      const unsubscribe = dronePathLength.onChange((latest) => {
-        if (pathRef.current && pathLength > 0) {
-          const point = pathRef.current.getPointAtLength(latest);
+      const svgElement = pathRef.current?.ownerSVGElement;
+      if (!svgElement || pathLength === 0) return;
 
-          droneX.set(point.x);
-          droneY.set(point.y);
-        }
+      const unsub = dronePathLength.onChange((latest) => {
+        if (!pathRef.current) return;
+
+        // A. Get the SVG's current on-screen position
+        const svgRect = svgElement.getBoundingClientRect();
+
+        // B. Get the target point *inside* the SVG's viewBox
+        const point = pathRef.current.getPointAtLength(latest);
+
+        // C. SVG's coordinate system
+        const viewBoxWidth = 1000;
+        const viewBoxHeight = 3000;
+
+        // D. Convert viewBox coords to a (0-1) percentage
+        const percentX = point.x / viewBoxWidth;
+        const percentY = point.y / viewBoxHeight;
+
+        // E. Convert percentage to a pixel position relative
+        //    to the SVG's on-screen box
+        const screenX = svgRect.left + percentX * svgRect.width;
+        const screenY = svgRect.top + percentY * svgRect.height;
+
+        // F. Set the motion values to the final screen position
+        droneX.set(screenX);
+        droneY.set(screenY);
       });
-      return () => unsubscribe();
-    }, [pathRef, pathLength, dronePathLength]);
 
-    const xPercent = useTransform(smoothDroneX, (v) => `${v}%`);
-    const yPercent = useTransform(smoothDroneY, (v) => `${v}%`);
+      return () => unsub();
+    }, [pathLength, dronePathLength, droneX, droneY]); // Correct dependencies
+
+    // Opacity fades in at 5%, out at 95%
     const parallaxOpacity = useTransform(
       scrollYProgress,
-      [0, 0.05, 0.1],
-      [0, 0.9, 0.9]
+      [0.05, 0.1, 0.9, 0.95],
+      [0, 0.9, 0.9, 0]
     );
-    const parallaxScale = useTransform(scrollYProgress, [0, 0.1], [0.7, 0.9]);
-    // --- End Drone Smoothing ---
+    const parallaxScale = useTransform(scrollYProgress, [0.1, 0.9], [0.7, 1]);
 
-    // ✅ NEW: Parallax transform for the Earth
-    // As the user scrolls from top (0) to bottom (1),
-    // we move the Earth's 'y' position by 500px.
-    // This makes it move slower than the content.
-    const earthParallaxY = useTransform(scrollYProgress, [0, 1], [0, 500]);
-
+    // Animated section wrapper (unchanged)
     const AnimatedSection: React.FC<{
       children: React.ReactNode;
       className?: string;
@@ -5223,18 +5248,10 @@ const ContentSections = memo(
           ref={sectionRef}
           className={`relative z-20 ${className}`}
           initial={{ opacity: 0, y: 80, scale: 0.95 }}
-          animate={
-            isInView
-              ? {
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                }
-              : {}
-          }
+          animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
           transition={{
             duration: 0.9,
-            delay: delay,
+            delay,
             ease: [0.25, 0.46, 0.45, 0.94],
           }}
         >
@@ -5246,21 +5263,11 @@ const ContentSections = memo(
     return (
       <div
         ref={containerRef}
-        className="relative py-20 sm:py-32 text-white overflow-hidden"
+        // ✅ CRITICAL FIX: Set to `overflow-visible`
+        // `overflow-hidden` was clipping the drone.
+        className="relative py-20 sm:py-32 text-white overflow-visible"
       >
-        {/* ✅ MODIFIED: Earth is back inside ContentSections */}
-        <motion.div
-          className="absolute inset-0 z-0" // Full width, Viewport height
-          style={{
-            opacity: 0.15, // Subtle background opacity
-            // y: earthParallaxY, // Apply the parallax transform
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
-          transition={{ duration: 1.5, delay: 0.5 }}
-        >
-          <EarthCanvas />
-        </motion.div>
+        {/* ❌ Earth Background is REMOVED from here */}
 
         {/* Dotted Path (z-10) */}
         <AnimatedPathComponent
@@ -5268,15 +5275,15 @@ const ContentSections = memo(
           pathRef={pathRef}
         />
 
-        {/* Parallax Drone (z-30) */}
+        {/* ✅ FIXED DRONE (z-50) */}
         <motion.div
-          className="fixed top-0 left-0 z-30 pointer-events-none w-64 sm:w-80"
+          className="fixed top-0 left-0 z-100 pointer-events-none w-64 sm:w-80"
           style={{
-            x: smoothDroneX,
+            x: smoothDroneX, // Use smoothed pixel values
             y: smoothDroneY,
             opacity: parallaxOpacity,
             scale: parallaxScale,
-            translateX: "-50%",
+            translateX: "-50%", // Center the drone
             translateY: "-50%",
           }}
         >
@@ -5288,14 +5295,9 @@ const ContentSections = memo(
             <ThreeDrone />
           </motion.div>
         </motion.div>
-
-        {/* --- END PARALLAX DRONE --- */}
-
-        {/* --- Content (z-20) --- */}
+        {/* Content Sections */}
         <div className="relative z-20 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 lg:space-y-36">
-          {/* ... All your <AnimatedSection> content remains here ... */}
-
-          {/* Section 1: Born in Bharat */}
+          {/* ---------- Section 1 ---------- */}
           <AnimatedSection className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <motion.div
               className="space-y-6 lg:col-start-1"
@@ -5313,6 +5315,7 @@ const ContentSections = memo(
               >
                 Born in Bharat. Built for the Battlefield.
               </motion.h2>
+
               <motion.p
                 className="text-lg text-gray-300 leading-relaxed"
                 initial={{ opacity: 0 }}
@@ -5325,6 +5328,7 @@ const ContentSections = memo(
                 resistant to jamming, these systems challenge traditional radar
                 and RF-based defences.
               </motion.p>
+
               <motion.p
                 className="text-gray-300 leading-relaxed"
                 initial={{ opacity: 0 }}
@@ -5344,12 +5348,13 @@ const ContentSections = memo(
             <div className="lg:col-start-2"></div>
           </AnimatedSection>
 
-          {/* Section 2: Why Acoustic Detection */}
+          {/* ---------- Section 2 ---------- */}
           <AnimatedSection
             className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
             delay={0.1}
           >
             <div className="lg:col-start-1"></div>
+
             <motion.div
               className="space-y-6 lg:col-start-2"
               initial={{ opacity: 0, x: -60 }}
@@ -5366,6 +5371,7 @@ const ContentSections = memo(
               >
                 WHY ACOUSTIC DETECTION MATTERS
               </motion.h2>
+
               <motion.ul
                 className="space-y-4 text-lg"
                 initial={{ opacity: 0 }}
@@ -5767,7 +5773,19 @@ const ScrollableContent = forwardRef<HTMLDivElement>((props, ref) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.75 }}
+      className="relative z-0"
     >
+      {/* ✅ EARTH BACKGROUND is here */}
+      <motion.div
+        // Fixed, fullscreen, and behind everything
+        className="absolute inset-0 z-[-1]"
+        style={{ opacity: 0.15 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.25 }}
+        transition={{ duration: 1.5, delay: 0.5 }}
+      >
+        <EarthCanvas />
+      </motion.div>
       <ContentSections
         ref={contentRef}
         scrollContainerRef={scrollContainerRef}
