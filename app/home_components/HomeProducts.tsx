@@ -1,3 +1,5 @@
+
+
 // "use client";
 
 // import React, { useState, useEffect, useRef } from 'react';
@@ -32,7 +34,13 @@
 //   // Apply slightly different ranges for a parallax effect
 //   const rotateX = useTransform(scrollYProgress, [0, 1], index === 0 ? [-8, 5] : [5, -8]); 
 //   const rotateY = useTransform(scrollYProgress, [0, 1], index === 0 ? [-5, 5] : [5, -5]);
-//   // -----------------------
+  
+//   // --- NEW: Add "going back" transforms ---
+//   // As scrollYProgress goes 0 -> 1, scale from 100% to 85%
+//   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
+//   // As scrollYProgress goes 0 -> 1, move 150px "back"
+//   const z = useTransform(scrollYProgress, [0, 1], [0, -150]);
+//   // ------------------------------------
 
 //   useEffect(() => {
 //     if (isInView) {
@@ -64,17 +72,21 @@
 //         stiffness: 80
 //       }}
 //       whileHover={{ 
-//         scale: 1.03, // Slightly increased hover scale
+//         scale: 1.03, // This hover scale will now apply *on top of* the scroll-driven scale
 //         boxShadow: "0 25px 50px -12px rgba(255, 215, 0, 0.4)" // Enhanced shadow
 //       }}
 //       onHoverStart={onHover}
 //       onHoverEnd={onLeave}
 //       // Apply scroll-linked rotation and preserve 3D transformations
+//       // --- CHANGED: Added scale and z to style ---
 //       style={{ 
 //         transformStyle: 'preserve-3d',
 //         rotateX, // Apply scroll-linked rotation
-//         rotateY  // Apply scroll-linked rotation
+//         rotateY, // Apply scroll-linked rotation
+//         scale,   // <-- ADDED
+//         z,       // <-- ADDED
 //       }}
+//       // ------------------------------------------
 //     >
 //       {/* Image with parallax effect */}
 //       <motion.div
@@ -202,6 +214,7 @@
 
 
 // // --- MAIN HOME PRODUCTS COMPONENT ---
+// // (This component remains unchanged)
 
 // const HomeProducts = () => {
 //   const sectionRef = useRef(null); // Changed ref name for clarity
@@ -215,6 +228,11 @@
 //   });
 //   // ----------------------------------------
 
+//   // --- 3D Scroll transforms for background ---
+//   const bgScale = useTransform(scrollYProgress, [0, 1], [1, 0.5]); 
+//   const bgZ = useTransform(scrollYProgress, [0, 1], [0, -600]);     
+
+
 //   const products: Product[] = [ 
 //     { id: 1, title: "SMALL ARMS", imagePath: "/Hero_images/small_arms.png" },
 //     { id: 2, title: "AMMUNITION", imagePath: "/Hero_images/ammunation.png" }
@@ -224,9 +242,9 @@
 //     <section 
 //       ref={sectionRef} // Use the new ref name
 //       className="relative bg-black text-white py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-start min-h-screen overflow-hidden"
+//       style={{ perspective: '1000px' }}
 //     >
 //       {/* Animated Background Grid */}
-//       {/* ... (background grid code remains the same) ... */}
 //        <div className="absolute inset-0 z-0 opacity-20">
 //         <motion.div 
 //           className="w-full h-full"
@@ -235,7 +253,10 @@
 //               linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
 //               linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)
 //             `,
-//             backgroundSize: '50px 50px'
+//             backgroundSize: '50px 50px',
+//             transformStyle: 'preserve-3d', 
+//             scale: bgScale,                 
+//             z: bgZ,                         
 //           }}
 //           animate={{ backgroundPosition: ['0px 0px', '50px 50px'] }}
 //           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -273,7 +294,7 @@
 //       {/* Product Cards Container - ADDED PERSPECTIVE */}
 //       <div 
 //         className="mt-8 w-full max-w-7xl relative z-10" 
-//         style={{ perspective: '1200px' }} // Add perspective here
+//         style={{ perspective: '1200px' }} // This perspective is for the cards
 //       >
 //         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-20"> {/* Increased gap */}
 //           {products.map((product, index) => (
@@ -292,7 +313,6 @@
 //       </div>
 
 //       {/* Floating particles effect */}
-//       {/* ... (particles effect remains the same) ... */}
 //        {isInView && (
 //         <div className="absolute inset-0 z-0 pointer-events-none">
 //           {[...Array(20)].map((_, i) => (
@@ -324,14 +344,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useInView, useScroll, useTransform, Variants } from 'framer-motion'; // Added useScroll, useTransform
+import { motion, useInView, useScroll, useTransform, Variants } from 'framer-motion';
 import Image from 'next/image';
+import Link from 'next/link'; // <-- 1. IMPORT LINK
 
 // --- TYPE DEFINITIONS ---
 interface Product {
   id: number;
   title: string;
   imagePath: string;
+  href: string; // <-- 2. ADDED HREF
 }
 
 interface ProductCardProps {
@@ -341,28 +363,20 @@ interface ProductCardProps {
   isHovered: boolean;
   onHover: () => void;
   onLeave: () => void;
-  scrollYProgress: any; // Pass scroll progress to card
+  scrollYProgress: any;
 }
 
-// --- PRODUCT CARD COMPONENT ---
+// --- PRODUCT CARD COMPONENT (No Changes Needed) ---
 const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isHovered, onHover, onLeave, scrollYProgress }) => {
   const [showBullet, setShowBullet] = useState(false);
   const [shattered, setShattered] = useState(false);
-  const cardRef = useRef(null); // Ref for individual card if needed
+  const cardRef = useRef(null);
 
-  // --- 3D Scroll Effect ---
-  // Map scroll progress (0 to 1) to a rotation range (e.g., -10deg to 10deg)
-  // Apply slightly different ranges for a parallax effect
   const rotateX = useTransform(scrollYProgress, [0, 1], index === 0 ? [-8, 5] : [5, -8]); 
   const rotateY = useTransform(scrollYProgress, [0, 1], index === 0 ? [-5, 5] : [5, -5]);
-  
-  // --- NEW: Add "going back" transforms ---
-  // As scrollYProgress goes 0 -> 1, scale from 100% to 85%
   const scale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
-  // As scrollYProgress goes 0 -> 1, move 150px "back"
   const z = useTransform(scrollYProgress, [0, 1], [0, -150]);
-  // ------------------------------------
-
+  
   useEffect(() => {
     if (isInView) {
       const timer = setTimeout(() => {
@@ -382,9 +396,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isH
 
   return (
     <motion.div
-      ref={cardRef} // Add ref if needed for more complex effects
+      ref={cardRef}
       className="relative h-64 sm:h-80 md:h-96 w-full group overflow-hidden rounded-lg cursor-pointer"
-      initial={{ opacity: 0, scale: 0.8 }} // Simplified initial
+      initial={{ opacity: 0, scale: 0.8 }}
       animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
       transition={{ 
         duration: 0.8, 
@@ -393,26 +407,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isH
         stiffness: 80
       }}
       whileHover={{ 
-        scale: 1.03, // This hover scale will now apply *on top of* the scroll-driven scale
-        boxShadow: "0 25px 50px -12px rgba(255, 215, 0, 0.4)" // Enhanced shadow
+        scale: 1.03,
+        boxShadow: "0 25px 50px -12px rgba(255, 215, 0, 0.4)"
       }}
       onHoverStart={onHover}
       onHoverEnd={onLeave}
-      // Apply scroll-linked rotation and preserve 3D transformations
-      // --- CHANGED: Added scale and z to style ---
       style={{ 
         transformStyle: 'preserve-3d',
-        rotateX, // Apply scroll-linked rotation
-        rotateY, // Apply scroll-linked rotation
-        scale,   // <-- ADDED
-        z,       // <-- ADDED
+        rotateX,
+        rotateY,
+        scale,
+        z,
       }}
-      // ------------------------------------------
     >
       {/* Image with parallax effect */}
       <motion.div
         className="absolute inset-0"
-        // Apply slight counter-rotation or different scale on hover for depth
         style={{ transformStyle: 'preserve-3d' }}
         animate={isHovered ? { scale: 1.15, z: 20 } : { scale: 1, z: 0 }} 
         transition={{ duration: 0.4 }}
@@ -422,13 +432,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isH
           alt={product.title}
           layout="fill"
           objectFit="cover"
-          className="transition-all duration-700 rounded-lg" // Added rounded-lg
+          className="transition-all duration-700 rounded-lg"
         />
       </motion.div>
 
       {/* Vignette Overlay */}
       <div 
-        className="absolute inset-0 z-10 rounded-lg" // Added rounded-lg
+        className="absolute inset-0 z-10 rounded-lg"
         style={{
           background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.85) 100%)'
         }}
@@ -448,7 +458,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isH
             ease: "easeInOut"
           }}
         >
-          {/* ... (bullet effect code remains the same) ... */}
            <div className="relative">
             <motion.div 
               className="w-8 h-2 bg-gradient-to-r from-yellow-600 via-yellow-400 to-yellow-200 rounded-full"
@@ -475,7 +484,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isH
       <div className="absolute bottom-6 sm:bottom-8 left-0 right-0 z-20 text-center px-4">
         <motion.div 
           className="relative inline-block"
-          // Add subtle 3D lift to text on hover
           style={{ transformStyle: 'preserve-3d' }}
           animate={ isHovered ? { z: 30 } : { z: 0 } }
           transition={{ duration: 0.4 }}
@@ -508,7 +516,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isH
 
         {/* Impact shockwave */}
         {shattered && (
-          // ... (shockwave code remains the same) ...
            <motion.div
             className="absolute top-1/2 left-1/2 w-40 h-40 border-2 border-yellow-500 rounded-full"
             style={{ x: '-50%', y: '-50%' }}
@@ -521,47 +528,50 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, index, isInView, isH
 
       {/* Hover glow effect (subtler) */}
       <motion.div
-        className="absolute inset-0 z-5 pointer-events-none rounded-lg" // Added rounded-lg
+        className="absolute inset-0 z-5 pointer-events-none rounded-lg"
         animate={isHovered ? {
           background: 'radial-gradient(circle at center, rgba(255, 215, 0, 0.1), transparent 60%)'
         } : { background: 'transparent' }}
         transition={{ duration: 0.4 }}
       />
-
-      {/* Removed Corner accents */}
     </motion.div>
   );
 };
 
 
 // --- MAIN HOME PRODUCTS COMPONENT ---
-// (This component remains unchanged)
-
 const HomeProducts = () => {
-  const sectionRef = useRef(null); // Changed ref name for clarity
+  const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: true, amount: 0.2 }); 
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
 
-  // --- Scroll Progress within the section ---
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start end", "end start"] // Animate from when section starts entering to when it fully leaves
+    offset: ["start end", "end start"]
   });
-  // ----------------------------------------
 
-  // --- 3D Scroll transforms for background ---
   const bgScale = useTransform(scrollYProgress, [0, 1], [1, 0.5]); 
   const bgZ = useTransform(scrollYProgress, [0, 1], [0, -600]);     
 
-
+  // --- 3. UPDATED PRODUCTS ARRAY ---
   const products: Product[] = [ 
-    { id: 1, title: "SMALL ARMS", imagePath: "/Hero_images/small_arms.png" },
-    { id: 2, title: "AMMUNITION", imagePath: "/Hero_images/ammunation.png" }
+    { 
+      id: 1, 
+      title: "SMALL ARMS", 
+      imagePath: "/Hero_images/small_arms.png", 
+      href: "/products/smallarms" 
+    },
+    { 
+      id: 2, 
+      title: "AMMUNITION", 
+      imagePath: "/Hero_images/ammunation.png", 
+      href: "/products/ammunition" 
+    }
   ];
 
   return (
     <section 
-      ref={sectionRef} // Use the new ref name
+      ref={sectionRef}
       className="relative bg-black text-white py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-start min-h-screen overflow-hidden"
       style={{ perspective: '1000px' }}
     >
@@ -587,14 +597,13 @@ const HomeProducts = () => {
 
       {/* Title */}
       <motion.div
-        className="text-center relative z-10 mb-12 sm:mb-16" // Added margin bottom
+        className="text-center relative z-10 mb-12 sm:mb-16"
         initial={{ opacity: 0, y: 20 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.8 }}
       >
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-white">
           {"OUR PRODUCTS".split("").map((char: string, index: number) => (
-            // ... (title stagger animation remains the same) ...
              <motion.span
               key={index}
               initial={{ opacity: 0, y: 50 }}
@@ -612,23 +621,26 @@ const HomeProducts = () => {
         </h2>
       </motion.div>
 
-      {/* Product Cards Container - ADDED PERSPECTIVE */}
+      {/* Product Cards Container */}
       <div 
         className="mt-8 w-full max-w-7xl relative z-10" 
-        style={{ perspective: '1200px' }} // This perspective is for the cards
+        style={{ perspective: '1200px' }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-20"> {/* Increased gap */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 sm:gap-16 lg:gap-20">
           {products.map((product, index) => (
-            <ProductCard 
-              key={product.id}
-              product={product}
-              index={index}
-              isInView={isInView}
-              isHovered={hoveredProduct === product.id}
-              onHover={() => setHoveredProduct(product.id)} 
-              onLeave={() => setHoveredProduct(null)} 
-              scrollYProgress={scrollYProgress} // Pass progress down
-            />
+            // --- 4. WRAPPED ProductCard WITH Link ---
+            <Link key={product.id} href={product.href}>
+              <ProductCard 
+                product={product}
+                index={index}
+                isInView={isInView}
+                isHovered={hoveredProduct === product.id}
+                onHover={() => setHoveredProduct(product.id)} 
+                onLeave={() => setHoveredProduct(null)} 
+                scrollYProgress={scrollYProgress}
+              />
+            </Link>
+            // ----------------------------------------
           ))}
         </div>
       </div>
@@ -658,6 +670,5 @@ const HomeProducts = () => {
     </section>
   );
 };
-
 
 export default HomeProducts;
