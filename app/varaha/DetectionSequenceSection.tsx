@@ -675,11 +675,11 @@ const DetectionSequenceSection: React.FC = memo(() => {
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8 }}
       >
-        Interactive C-UAS 3D Detection System
+        Interactive CUAS 3D Detection System
       </motion.h2>
 
       <motion.div
-        className="relative w-full h-[75vh] max-w-7xl mx-auto border-2 border-blue-500/30 rounded-lg overflow-hidden shadow-2xl shadow-blue-500/20"
+        className="relative w-full h-[75vh] max-w-7xl mx-auto rounded-lg overflow-hidden shadow-2xl shadow-blue-500/20"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={isInView ? { opacity: 1, scale: 1 } : {}}
         transition={{ duration: 0.8, delay: 0.3 }}
