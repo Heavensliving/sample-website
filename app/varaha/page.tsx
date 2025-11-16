@@ -24,6 +24,7 @@ import EarthCanvas from "./earthCanvas";
 import DetectionSequenceSection from "./DetectionSequenceSection";
 import Image from "next/image";
 import ThreeDrone from "./ThreeDrone";
+import { useRouter } from "next/navigation";
 
 // --- Text Content ---
 const title = "VARAHA";
@@ -163,6 +164,7 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
   onAnimationComplete,
 }) => {
   const ref = useRef(null);
+  const router = useRouter();
   const isInView = useInView(ref, { once: true, amount: 0.2 });
 
   const { scrollY } = useScroll();
@@ -284,6 +286,7 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
                 </motion.button>
 
                 <motion.button
+                  onClick={() => router.push("/contact")}
                   className="relative overflow-hidden px-6 py-3 bg-blue-600 text-white font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(59,100,246,0.5)] border-2 border-blue-600 hover:border-blue-500"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
