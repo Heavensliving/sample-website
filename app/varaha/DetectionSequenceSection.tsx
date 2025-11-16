@@ -1467,6 +1467,12 @@ const DetectionSequenceSection: React.FC = memo(() => {
           performance={{ min: 0.5 }}
         >
           <Suspense fallback={<Loader />}>
+            <OrbitControls
+              autoRotate
+              enableZoom={false}
+              enablePan={false}
+              target={[0, 0, 0]}
+            />
             <SceneContent stage={stage} cameraMode={cameraMode} />
           </Suspense>
         </Canvas>
