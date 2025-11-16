@@ -265,7 +265,7 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
                 className="flex flex-col sm:flex-row items-center gap-6 mt-4 sm:mt-8"
               >
                 <motion.button
-                  className="relative overflow-hidden px-6 py-3 border-2 border-blue-500 text-blue-300 font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(59,100,246,0.5)]"
+                  className="relative overflow-hidden px-6 py-3 border-2 border-blue-500 text-blue-300 font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(59,100,246,0.5)] cursor-pointer"
                   onClick={handleDownload}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -287,7 +287,7 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
 
                 <motion.button
                   onClick={() => router.push("/contact")}
-                  className="relative overflow-hidden px-6 py-3 bg-blue-600 text-white font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(59,100,246,0.5)] border-2 border-blue-600 hover:border-blue-500"
+                  className="relative overflow-hidden px-6 py-3 bg-blue-600 text-white font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(59,100,246,0.5)] border-2 border-blue-600 hover:border-blue-500 cursor-pointer"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
