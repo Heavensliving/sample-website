@@ -8,6 +8,7 @@ import React, {
   useLayoutEffect,
   forwardRef,
   useMemo,
+  useCallback,
 } from "react";
 import {
   motion,
@@ -16,25 +17,20 @@ import {
   AnimatePresence,
   useScroll,
   useTransform,
-  MotionValue,
-  useMotionValue,
-  useSpring, // ✅ ADDED: Import useSpring for smooth motion
+  useSpring,
   useReducedMotion,
 } from "framer-motion";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import EarthCanvas from "./earthCanvas";
-import DomeCanvas from "./domeCanvas";
 import DetectionSequenceSection from "./DetectionSequenceSection";
+import Image from "next/image";
 import ThreeDrone from "./ThreeDrone";
-import Link from "next/link";
 
-// --- Text Content (Unchanged) ---
+// --- Text Content ---
 const title = "VARAHA";
 const description =
   "Next-generation Counter-Unmanned Aircraft System (CUAS) engineered by SSS Defence to detect, localize, and neutralize hostile drones through AI-enabled acoustic intelligence and coherent sensor fusion.";
 
-// --- Particle Type (Unchanged) ---
+// --- Particle Type ---
 interface Particle {
   id: number;
   x: number;
@@ -43,11 +39,11 @@ interface Particle {
   delay: number;
 }
 
-// --- Random Value Function (Unchanged) ---
+// --- Random Value Function ---
 const randomValue = (min: number, max: number) =>
   Math.random() * (max - min) + min;
 
-// --- Glitch Variant for VARAHA Title (Unchanged) ---
+// --- Animation Variants ---
 const glitchTextVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -62,7 +58,6 @@ const glitchTextVariants: Variants = {
   },
 };
 
-// --- Variants for Description and Button (Unchanged) ---
 const descriptionVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -90,21 +85,99 @@ const buttonVariants: Variants = {
   },
 };
 
-// --- HeroSection Component (Unchanged from your version) ---
+// --- Optimized Particles Component ---
+const MemoizedParticles: React.FC<{ isInView: boolean }> = memo(
+  ({ isInView }) => {
+    const particles = useMemo(
+      () =>
+        Array.from({ length: 20 }).map((_, i) => ({
+          id: i,
+          x: randomValue(0, 100),
+          y: randomValue(0, 100),
+          duration: randomValue(10, 18),
+          delay: randomValue(0, 8),
+        })),
+      []
+    );
+
+    return (
+      <div className="absolute inset-0 z-0" style={{ perspective: "800px" }}>
+        <motion.div
+          className="absolute w-full h-full"
+          style={{
+            transformStyle: "preserve-3d",
+            transform: "translateY(50%) rotateX(75deg)",
+            willChange: "transform",
+          }}
+          animate={isInView ? { scale: 1.2 } : { scale: 1 }}
+          transition={{ duration: 2, ease: "easeInOut" }}
+        >
+          {particles.map((particle) => (
+            <motion.div
+              key={particle.id}
+              className="absolute w-1 h-1 bg-blue-500 rounded-full"
+              style={{
+                left: `${particle.x}%`,
+                top: `${particle.y}%`,
+                boxShadow:
+                  "0 0 8px rgba(59, 130, 246, 0.8), 0 0 16px rgba(59, 130, 246, 0.6)",
+              }}
+              initial={{ opacity: 0 }}
+              animate={
+                isInView
+                  ? {
+                      transform: ["translateY(0px)", "translateY(300px)"],
+                      opacity: [0, 0.6, 0.6, 0],
+                    }
+                  : {
+                      opacity: 0,
+                    }
+              }
+              transition={{
+                duration: particle.duration,
+                delay: particle.delay,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            />
+          ))}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: "40px 40px",
+            }}
+          />
+        </motion.div>
+      </div>
+    );
+  }
+);
+MemoizedParticles.displayName = "MemoizedParticles";
+
+// --- Hero Section ---
 const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
   onAnimationComplete,
 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.2 });
-  const router = useRouter();
 
   const { scrollY } = useScroll();
 
-  // Fade the hero drone from 1 (visible) to 0 (hidden)
-  const heroDroneOpacity = useTransform(scrollY, [0, 200], [1, 0]);
+  const heroDroneOpacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const heroDroneScale = useTransform(scrollY, [0, 300], [1, 0.85]);
 
-  // Scale down to 0.9 to match the new, larger parallax drone
-  const heroDroneScale = useTransform(scrollY, [0, 200], [1, 0.9]);
+  const handleDownload = useCallback(() => {
+    const link = document.createElement("a");
+    link.href = "/downloadable/VARAHA - Brochure.pdf";
+    link.download = "VARAHA - Brochure.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }, []);
 
   return (
     <section
@@ -136,6 +209,7 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
               style={{
                 opacity: heroDroneOpacity,
                 scale: heroDroneScale,
+                willChange: "transform, opacity",
               }}
               initial={{ scale: 0.3, y: 200, opacity: 0 }}
               animate={{
@@ -188,17 +262,9 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
                 onAnimationComplete={onAnimationComplete}
                 className="flex flex-col sm:flex-row items-center gap-6 mt-4 sm:mt-8"
               >
-                {/* Button 1: Explore Capabilities */}
                 <motion.button
                   className="relative overflow-hidden px-6 py-3 border-2 border-blue-500 text-blue-300 font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(59,100,246,0.5)]"
-                  onClick={() => {
-                    const link = document.createElement("a");
-                    link.href = "/downloadable/VARAHA - Brochure.pdf"; // <-- Correct public path
-                    link.download = "VARAHA - Brochure.pdf"; // <-- Force download
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }}
+                  onClick={handleDownload}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -217,10 +283,8 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
                   <span className="relative z-10">Download Brochure</span>
                 </motion.button>
 
-                {/* Button 2: Request Demo */}
                 <motion.button
                   className="relative overflow-hidden px-6 py-3 bg-blue-600 text-white font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(59,100,246,0.5)] border-2 border-blue-600 hover:border-blue-500"
-                  onClick={() => router.push("/contact")}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -236,184 +300,41 @@ const HeroSection: React.FC<{ onAnimationComplete: () => void }> = ({
 };
 HeroSection.displayName = "HeroSection";
 
-// --- MemoizedParticles Component (Unchanged) ---
-const MemoizedParticles: React.FC<{ isInView: boolean }> = memo(
-  ({ isInView }) => {
-    const particles = useMemo(
-      () =>
-        Array.from({ length: 30 }).map((_, i) => ({
-          id: i,
-          x: randomValue(0, 100),
-          y: randomValue(0, 100),
-          duration: randomValue(8, 16),
-          delay: randomValue(0, 10),
-        })),
-      []
-    );
-
-    return (
-      <div className="absolute inset-0 z-0" style={{ perspective: "800px" }}>
-        <motion.div
-          className="absolute w-full h-full"
-          style={{
-            transformStyle: "preserve-3d",
-            transform: "translateY(50%) rotateX(75deg)",
-          }}
-          animate={isInView ? { scale: 1.2 } : { scale: 1 }}
-          transition={{ duration: 2, ease: "easeInOut" }}
-        >
-          {particles.map((particle) => (
-            <motion.div
-              key={particle.id}
-              className="absolute w-1 h-1 bg-blue-500 rounded-full"
-              style={{
-                left: `${particle.x}%`,
-                top: `${particle.y}%`,
-                boxShadow:
-                  "0 0 8px rgba(59, 130, 246, 0.8), 0 0 16px rgba(59, 130, 246, 0.6)",
-              }}
-              initial={{ opacity: 0 }}
-              animate={
-                isInView
-                  ? {
-                      transform: ["translateY(0px)", "translateY(300px)"],
-                      opacity: [0, 0.6, 0.6, 0],
-                    }
-                  : {
-                      opacity: 0,
-                    }
-              }
-              transition={{
-                duration: particle.duration,
-                delay: particle.delay,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-          ))}
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
-              `,
-              backgroundSize: "40px 40px",
-            }}
-          />
-        </motion.div>
-      </div>
-    );
-  }
-);
-MemoizedParticles.displayName = "MemoizedParticles";
-
-// --- Animated SVG Path Component (Unchanged) ---
-const AnimatedPathComponent: React.FC<{
-  scrollContainerRef: React.RefObject<HTMLDivElement | null>;
-  pathRef: React.RefObject<SVGPathElement | null>; // ✅ MODIFIED: Corrected type
-}> = ({ scrollContainerRef, pathRef }) => {
-  const [pathLength, setPathLength] = useState(0);
-
-  const { scrollYProgress } = useScroll({
-    target: scrollContainerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const pathProgress = useTransform(scrollYProgress, [0.1, 0.9], [0, 1]);
-
-  useLayoutEffect(() => {
-    if (pathRef.current) {
-      setPathLength(pathRef.current.getTotalLength());
-    }
-  }, [pathRef]); // ✅ ADDED: Dependency array
-
-  return (
-    <div className="absolute inset-0 z-10 overflow-visible">
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 1000 3000"
-        preserveAspectRatio="none"
-        className="overflow-visible"
-      >
-        <motion.path
-          ref={pathRef}
-          d="M 950 150 
-             C 700 250, 200 350, 200 600
-             L 200 900
-             C 200 1150, 800 1250, 800 1500 
-             L 800 1700
-             C 800 1950, 200 2050, 200 2300
-             L 200 2800"
-          fill="none"
-          stroke="#00BFFF"
-          strokeWidth="2"
-          strokeDasharray="4 12"
-          opacity={0.5}
-        />
-      </svg>
-    </div>
-  );
-};
-
-// --- CheckListItem Component (Unchanged) ---
-const CheckListItem: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => (
-  <li className="flex items-start gap-3">
-    <svg
-      className="w-5 h-5 text-blue-400 flex-shrink-0 mt-1"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-      />
-    </svg>
-    <span className="text-gray-300">{children}</span>
-  </li>
-);
-
+// --- Optimized Parallax Drone ---
 const ParallaxDrone: React.FC<{ scrollYProgress: any }> = memo(
   ({ scrollYProgress }) => {
     const shouldReduceMotion = useReducedMotion();
 
-    // Simplified path following - use percentage-based positioning
+    // Smooth path positions
     const droneX = useTransform(
       scrollYProgress,
-      [0.1, 0.3, 0.5, 0.7, 0.9],
-      ["95vw", "20vw", "20vw", "80vw", "20vw"]
+      [0.05, 0.25, 0.45, 0.65, 0.85],
+      ["95%", "20%", "20%", "80%", "20%"]
     );
     const droneY = useTransform(
       scrollYProgress,
-      [0.1, 0.3, 0.5, 0.7, 0.9],
-      ["5vh", "25vh", "45vh", "65vh", "85vh"]
+      [0.05, 0.25, 0.45, 0.65, 0.85],
+      ["8%", "28%", "48%", "68%", "88%"]
     );
 
-    // Smooth spring animation
+    // Highly optimized spring settings
     const smoothX = useSpring(droneX, {
-      stiffness: 50,
-      damping: 20,
-      mass: 0.5,
+      stiffness: 40,
+      damping: 25,
+      mass: 0.3,
     });
     const smoothY = useSpring(droneY, {
-      stiffness: 50,
-      damping: 20,
-      mass: 0.5,
+      stiffness: 40,
+      damping: 25,
+      mass: 0.3,
     });
 
     const opacity = useTransform(
       scrollYProgress,
-      [0.05, 0.1, 0.9, 0.95],
-      [0, 0.9, 0.9, 0]
+      [0, 0.05, 0.85, 0.95],
+      [0, 1, 1, 0]
     );
-    const scale = useTransform(scrollYProgress, [0.1, 0.9], [0.7, 1]);
+    const scale = useTransform(scrollYProgress, [0.05, 0.85], [0.6, 1]);
 
     if (shouldReduceMotion) {
       return null;
@@ -421,7 +342,7 @@ const ParallaxDrone: React.FC<{ scrollYProgress: any }> = memo(
 
     return (
       <motion.div
-        className="fixed top-0 left-0 z-50 pointer-events-none w-48 sm:w-64 md:w-80"
+        className="fixed top-0 left-0 z-50 pointer-events-none"
         style={{
           x: smoothX,
           y: smoothY,
@@ -429,12 +350,22 @@ const ParallaxDrone: React.FC<{ scrollYProgress: any }> = memo(
           scale,
           translateX: "-50%",
           translateY: "-50%",
+          width: "clamp(12rem, 20vw, 20rem)",
           willChange: "transform, opacity",
         }}
       >
         <motion.div
           style={{
             filter: "drop-shadow(0 0 20px rgba(59,130,246,0.7))",
+          }}
+          animate={{
+            rotateY: [0, 5, -5, 0],
+            rotateZ: [0, 2, -2, 0],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            ease: "easeInOut",
           }}
         >
           <ThreeDrone />
@@ -445,10 +376,10 @@ const ParallaxDrone: React.FC<{ scrollYProgress: any }> = memo(
 );
 ParallaxDrone.displayName = "ParallaxDrone";
 
-// --- Simplified Path Component ---
+// --- Animated Path ---
 const AnimatedPath: React.FC<{ scrollYProgress: any }> = memo(
   ({ scrollYProgress }) => {
-    const pathProgress = useTransform(scrollYProgress, [0.1, 0.9], [0, 1]);
+    const pathProgress = useTransform(scrollYProgress, [0.05, 0.9], [0, 1]);
 
     return (
       <div className="absolute inset-0 z-10 overflow-visible pointer-events-none">
@@ -471,7 +402,7 @@ const AnimatedPath: React.FC<{ scrollYProgress: any }> = memo(
             stroke="#00BFFF"
             strokeWidth="2"
             strokeDasharray="4 12"
-            opacity={0.5}
+            opacity={0.4}
             style={{
               pathLength: pathProgress,
             }}
@@ -483,6 +414,30 @@ const AnimatedPath: React.FC<{ scrollYProgress: any }> = memo(
 );
 AnimatedPath.displayName = "AnimatedPath";
 
+// --- CheckListItem Component ---
+const CheckListItem: React.FC<{ children: React.ReactNode }> = memo(
+  ({ children }) => (
+    <li className="flex items-start gap-3">
+      <svg
+        className="w-5 h-5 text-blue-400 flex-shrink-0 mt-1"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span className="text-gray-300">{children}</span>
+    </li>
+  )
+);
+CheckListItem.displayName = "CheckListItem";
+
+// --- Content Sections ---
 const ContentSections = memo(
   forwardRef<
     HTMLDivElement,
@@ -507,10 +462,10 @@ const ContentSections = memo(
         <motion.div
           ref={sectionRef}
           className={`relative z-20 ${className}`}
-          initial={{ opacity: 0, y: 60 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{
-            duration: 0.6,
+            duration: 0.5,
             delay,
             ease: "easeOut",
           }}
@@ -547,7 +502,6 @@ const ContentSections = memo(
                 others can see.
               </p>
             </div>
-            <div className="lg:col-start-2"></div>
           </AnimatedSection>
 
           {/* Section 2 */}
