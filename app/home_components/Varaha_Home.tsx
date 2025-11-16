@@ -1,7 +1,16 @@
+
+
 // "use client";
 
 // import React, { useRef, useState, useEffect } from 'react';
-// import { motion, useInView, Variants } from 'framer-motion';
+// // --- CHANGED: Added useScroll and useTransform ---
+// import { 
+//   motion, 
+//   useInView, 
+//   Variants, 
+//   useScroll, 
+//   useTransform 
+// } from 'framer-motion';
 // import Image from 'next/image';
 // import { useRouter } from 'next/navigation';
 
@@ -78,8 +87,22 @@
 
 // const Varaha_Home: React.FC = () => {
 //   const ref = useRef(null);
-//   const isInView = useInView(ref, { once: false, amount: 0.2 });
+//   // --- CHANGED: Set once: true ---
+//   const isInView = useInView(ref, { once: true, amount: 0.2 });
 //   const router = useRouter();
+
+//   // --- NEW: Setup for 3D scroll effect ---
+//   const { scrollYProgress } = useScroll({
+//     target: ref,
+//     offset: ["start end", "end start"] // Track from section enters bottom to exits top
+//   });
+
+//   // Map scroll progress (0-1) to 3D transforms
+//   // As section scrolls up (progress 0 -> 1), background...
+//   const bgScale = useTransform(scrollYProgress, [0, 1], [1.2, 0.8]); // ...shrinks
+//   const bgZ = useTransform(scrollYProgress, [0, 1], [0, -500]);     // ...moves 500px "back"
+//   // --- END: 3D scroll effect setup ---
+
 
 //   // --- Generate particles on client side using state ---
 //   const [particles, setParticles] = useState<Particle[]>([]);
@@ -107,14 +130,19 @@
 //         className="absolute inset-0 z-0"
 //         style={{ perspective: '800px' }}
 //       >
+//         {/* --- CHANGED: Applied scroll-based transforms --- */}
 //         <motion.div
 //           className="absolute w-full h-full"
 //           style={{
 //             transformStyle: 'preserve-3d',
-//             transform: 'translateY(50%) rotateX(75deg)'
+//             // Static transforms
+//             translateY: '50%',
+//             rotateX: '75deg',
+//             // Dynamic scroll-based transforms
+//             scale: bgScale,
+//             z: bgZ,
 //           }}
-//           animate={isInView ? { scale: 1.2 } : { scale: 1 }}
-//           transition={{ duration: 2, ease: "easeInOut" }}
+//           // --- REMOVED: Old 'animate' and 'transition' props ---
 //         >
 //           {particles.map((particle) => (
 //             <motion.div
@@ -335,7 +363,6 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from 'react';
-// --- CHANGED: Added useScroll and useTransform ---
 import { 
   motion, 
   useInView, 
@@ -400,47 +427,37 @@ const wordVariants: Variants = {
   }
 };
 
-// --- NEW: Glitch Button Variant ---
 const glitchButtonVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
-    opacity: [0, 0.8, 0.5, 1, 0.7, 1],   // Flicker opacity
-    x: [0, -2, 2, -4, 4, 0],          // Jitter horizontally
-    skewX: [0, 3, -2, 5, -3, 0],      // Jitter skew
+    opacity: [0, 0.8, 0.5, 1, 0.7, 1],
+    x: [0, -2, 2, -4, 4, 0],
+    skewX: [0, 3, -2, 5, -3, 0],
     transition: {
-      delay: 2.5, // <-- Wait for text content to load
-      duration: 0.4, // <-- Duration of the glitch effect
+      delay: 2.5,
+      duration: 0.4,
       times: [0, 0.2, 0.4, 0.6, 0.8, 1]
     }
   }
 };
-// ----------------------------
 
 
 const Varaha_Home: React.FC = () => {
   const ref = useRef(null);
-  // --- CHANGED: Set once: true ---
   const isInView = useInView(ref, { once: true, amount: 0.2 });
   const router = useRouter();
 
-  // --- NEW: Setup for 3D scroll effect ---
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: ["start end", "end start"] // Track from section enters bottom to exits top
+    offset: ["start end", "end start"]
   });
 
-  // Map scroll progress (0-1) to 3D transforms
-  // As section scrolls up (progress 0 -> 1), background...
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.2, 0.8]); // ...shrinks
-  const bgZ = useTransform(scrollYProgress, [0, 1], [0, -500]);     // ...moves 500px "back"
-  // --- END: 3D scroll effect setup ---
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.2, 0.8]);
+  const bgZ = useTransform(scrollYProgress, [0, 1], [0, -500]);
 
-
-  // --- Generate particles on client side using state ---
   const [particles, setParticles] = useState<Particle[]>([]);
 
   useEffect(() => {
-    // Generate particles only once on the client after initial mount
     const generatedParticles = Array.from({ length: 150 }).map((_, i) => ({
       id: i,
       x: randomValue(0, 100),
@@ -449,12 +466,11 @@ const Varaha_Home: React.FC = () => {
       delay: randomValue(0, 10),
     }));
     setParticles(generatedParticles);
-  }, []); // Empty dependency array ensures this runs only once client-side
+  }, []);
 
   return (
     <section
       ref={ref}
-      // --- RESPONSIVE: Section padding ---
       className="relative bg-black text-white py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 xl:px-16 2xl:px-24 flex flex-col lg:flex-row items-center justify-between min-h-screen overflow-hidden"
     >
       {/* 3D Molecule Floor Background */}
@@ -462,19 +478,15 @@ const Varaha_Home: React.FC = () => {
         className="absolute inset-0 z-0"
         style={{ perspective: '800px' }}
       >
-        {/* --- CHANGED: Applied scroll-based transforms --- */}
         <motion.div
           className="absolute w-full h-full"
           style={{
             transformStyle: 'preserve-3d',
-            // Static transforms
             translateY: '50%',
             rotateX: '75deg',
-            // Dynamic scroll-based transforms
             scale: bgScale,
             z: bgZ,
           }}
-          // --- REMOVED: Old 'animate' and 'transition' props ---
         >
           {particles.map((particle) => (
             <motion.div
@@ -507,19 +519,16 @@ const Varaha_Home: React.FC = () => {
               linear-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px),
               linear-gradient(90deg, rgba(59, 130, 246, 0.15) 1px, transparent 1px)
             `,
-            backgroundSize: '40px 40px' // Slightly smaller grid size
+            backgroundSize: '40px 40px'
           }} />
         </motion.div>
       </div>
 
-      {/* --- MODIFIED: LEFT COLUMN WRAPPER --- */}
-      {/* This new div wraps both the text box and the button
-          to keep them grouped on the left side */}
+      {/* LEFT COLUMN WRAPPER */}
       <div className="relative z-10 w-full lg:flex-1 lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl mb-16 lg:mb-0 lg:mr-8 xl:mr-12 flex flex-col items-start">
 
-        {/* --- LEFT COLUMN: TEXT CONTENT (Unchanged) --- */}
+        {/* LEFT COLUMN: TEXT CONTENT */}
         <motion.div
-          // --- RESPONSIVE: Width and margin (Removed margin) ---
           className="relative z-10 w-full"
           variants={containerVariants}
           initial="hidden"
@@ -527,14 +536,12 @@ const Varaha_Home: React.FC = () => {
         >
           {/* Animated Corner Brackets */}
           <motion.div
-            // --- RESPONSIVE: Bracket size ---
             className="absolute -top-3 -left-3 sm:-top-4 sm:-left-4 w-8 h-8 sm:w-12 sm:h-12 border-t-2 border-l-2 border-blue-500 opacity-50"
             initial={{ opacity: 0, x: -10, y: -10 }}
             animate={isInView ? { opacity: 0.5, x: 0, y: 0 } : { opacity: 0, x: -10, y: -10 }}
             transition={{ duration: 0.5, delay: 0.8 }}
           />
           <motion.div
-            // --- RESPONSIVE: Bracket size ---
             className="absolute -bottom-3 -right-3 sm:-bottom-4 sm:-right-4 w-8 h-8 sm:w-12 sm:h-12 border-b-2 border-r-2 border-blue-500 opacity-50"
             initial={{ opacity: 0, x: 10, y: 10 }}
             animate={isInView ? { opacity: 0.5, x: 0, y: 0 } : { opacity: 0, x: 10, y: 10 }}
@@ -543,7 +550,6 @@ const Varaha_Home: React.FC = () => {
 
           {/* VARAHA Title (Staggered) */}
           <motion.h1
-            // --- RESPONSIVE: Title font size ---
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 sm:mb-4 tracking-widest"
             variants={containerVariants}
             initial="hidden"
@@ -562,7 +568,6 @@ const Varaha_Home: React.FC = () => {
 
           {/* Subtitle (Typing effect) */}
           <motion.h2
-            // --- RESPONSIVE: Subtitle font size and margin ---
             className="text-xs sm:text-sm md:text-base font-light text-blue-300 tracking-[0.15em] sm:tracking-[0.2em] uppercase mb-4 sm:mb-6"
             initial={{ width: 0, opacity: 0 }}
             animate={isInView ? { width: '100%', opacity: 1 } : { width: 0, opacity: 0 }}
@@ -574,10 +579,9 @@ const Varaha_Home: React.FC = () => {
 
           {/* Description (Word stagger) */}
           <motion.p
-            // --- RESPONSIVE: Description font size ---
             className="text-xs sm:text-sm md:text-base text-gray-300 leading-relaxed max-w-lg"
             variants={containerVariants}
-            custom={1.5} // Custom delay for stagger
+            custom={1.5}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
           >
@@ -594,7 +598,6 @@ const Varaha_Home: React.FC = () => {
 
           {/* Animated Scanning Line */}
           <motion.div
-            // --- RESPONSIVE: Scanning line position ---
             className="absolute -bottom-6 sm:-bottom-8 left-0 w-1/2 h-px bg-gradient-to-r from-blue-500 to-transparent"
             initial={{ x: '-100%' }}
             animate={isInView ? { x: '100%' } : { x: '-100%' }}
@@ -602,7 +605,7 @@ const Varaha_Home: React.FC = () => {
               duration: 1.5,
               delay: 1.5,
               ease: "easeInOut",
-              repeat: isInView ? 2 : 0, // Only repeat when in view
+              repeat: isInView ? 2 : 0,
               repeatDelay: 1
             }}
           />
@@ -610,9 +613,9 @@ const Varaha_Home: React.FC = () => {
         {/* --- END OF TEXT CONTENT BOX --- */}
 
 
-        {/* --- NEW: GLITCH BUTTON (OUTSIDE BOX) --- */}
+        {/* GLITCH BUTTON (OUTSIDE BOX) */}
         <motion.button
-          variants={glitchButtonVariants} // <-- Applied new glitch variant
+          variants={glitchButtonVariants}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           className="relative overflow-hidden px-6 py-3 mt-8 sm:mt-10 border-2 border-blue-500 text-blue-300 font-semibold tracking-widest uppercase text-sm transition-all duration-300 hover:bg-blue-500/20 hover:text-white hover:shadow-[0_0_15px_rgba(59,130,246,0.5)]"
@@ -620,14 +623,14 @@ const Varaha_Home: React.FC = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          {/* Animated Glint Effect (Unchanged) */}
+          {/* Animated Glint Effect */}
           <motion.span
             className="absolute top-0 left-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-20"
             initial={{ x: '-150%' }}
             animate={isInView ? { x: '250%' } : { x: '-150%' }}
             transition={{
               duration: 1.5,
-              delay: 3.5, // Delayed this to start after the glitch-in
+              delay: 3.5,
               repeat: isInView ? Infinity : 0,
               repeatDelay: 5,
               ease: 'linear'
@@ -641,9 +644,8 @@ const Varaha_Home: React.FC = () => {
       {/* --- END OF LEFT COLUMN WRAPPER --- */}
 
 
-      {/* --- RIGHT COLUMN: IMAGE CONTENT (Unchanged) --- */}
+      {/* --- RIGHT COLUMN: IMAGE CONTENT --- */}
       <motion.div
-        // --- RESPONSIVE: Image height and width ---
         className="relative z-10 flex-1 w-full h-64 sm:h-80 md:h-96 lg:h-[60vh] lg:max-w-2xl xl:max-w-3xl 2xl:max-w-4xl"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 }}
@@ -662,9 +664,9 @@ const Varaha_Home: React.FC = () => {
           objectFit="contain"
         />
 
-        {/* Pulsing Sonar/Radar Rings from the center */}
+        {/* --- MODIFIED: Pulsing Sonar/Radar Rings --- */}
         <motion.div
-          className="absolute top-1/2 left-1/2 w-24 h-24 sm:w-32 sm:h-32" // Adjusted size
+          className="absolute top-1/2 left-1/2 w-24 h-24 sm:w-32 sm:h-32"
           style={{ x: '-50%', y: '-50%' }}
         >
           {[...Array(3)].map((_, i) => (
@@ -673,14 +675,14 @@ const Varaha_Home: React.FC = () => {
               className="absolute inset-0 border-2 border-blue-500 rounded-full"
               initial={{ scale: 0, opacity: 0 }}
               animate={isInView ? {
-                scale: [0, 3, 5],
-                opacity: [0.8, 0.3, 0]
+                scale: [0, 5], // Grow from 0 to 5
+                opacity: [0, 0.8, 0] // Fade in, then fade out
               } : { scale: 0, opacity: 0 }}
               transition={{
-                duration: 4,
-                delay: i * 1,
-                repeat: isInView ? Infinity : 0, // Only repeat when in view
-                ease: "easeOut"
+                duration: 3, // Slightly faster duration
+                delay: i * 1, // Staggered delay
+                repeat: isInView ? Infinity : 0,
+                ease: "linear" // Use "linear" for a steady, non-glitchy pulse
               }}
             />
           ))}

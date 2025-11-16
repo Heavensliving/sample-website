@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import Link from 'next/link'; // 1. Import Link
+import Link from 'next/link'; // Link is imported
 
 const Footer = () => {
   // Define animation props for the content wrapper
@@ -17,7 +17,6 @@ const Footer = () => {
     <footer 
       className="bg-black text-gray-400 pt-30 pb-10 px-4 sm:px-6 lg:px-8 xl:px-16 2xl:px-24" 
     >
-      {/* 2. Added motion.div wrapper for content animation */}
       <motion.div 
         className="max-w-7xl mx-auto"
         {...contentAnimation} // Apply all animation props here
@@ -47,28 +46,31 @@ const Footer = () => {
           <div className="lg:col-span-1"> 
             <h3 className="text-white text-xs font-bold uppercase mb-3 tracking-wider">PRODUCTS</h3> 
             <ul className="space-y-1.5 text-xs"> 
-              <li><a href="/products/smallarms" className="hover:text-white transition-colors">SMALL ARMS</a></li>
-              <li><a href="/products/ammunition" className="hover:text-white transition-colors">AMMUNITION</a></li>
-              <li><a href="/products/accessories" className="hover:text-white transition-colors">ACCESSORIES</a></li>
-              <li><a href="/varaha" className="hover:text-white transition-colors">CUAS</a></li>
+              {/* --- Using <Link> instead of <a> --- */}
+              <li><Link href="/products/smallarms" className="hover:text-white transition-colors">SMALL ARMS</Link></li>
+              <li><Link href="/products/ammunition" className="hover:text-white transition-colors">AMMUNITION</Link></li>
+              <li><Link href="/products/accessories" className="hover:text-white transition-colors">ACCESSORIES</Link></li>
+              <li><Link href="/varaha" className="hover:text-white transition-colors">CUAS</Link></li>
             </ul>
           </div>
 
-          {/* COMPANY */}
+          {/* COMPANY --- MODIFIED --- */}
           <div className="lg:col-span-1">
             <h3 className="text-white text-xs font-bold uppercase mb-3 tracking-wider">COMPANY</h3>
             <ul className="space-y-1.5 text-xs"> 
-              <li><a href="#" className="hover:text-white transition-colors">ABOUT US</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">WHAT WE DO</a></li>
+              {/* --- Changed href to "/company" --- */}
+              <li><Link href="/company" className="hover:text-white transition-colors">ABOUT US</Link></li>
+              <li><Link href="/company" className="hover:text-white transition-colors">WHAT WE DO</Link></li>
             </ul>
           </div>
 
-          {/* SUPPORT */}
+          {/* SUPPORT --- MODIFIED --- */}
           <div className="lg:col-span-1"> 
             <h3 className="text-white text-xs font-bold uppercase mb-3 tracking-wider">SUPPORT</h3> 
             <ul className="space-y-1.5 text-xs"> 
-              <li><a href="#" className="hover:text-white transition-colors">CATALOGS</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">SERVICES</a></li>
+              {/* --- Changed href to "/support" --- */}
+              <li><Link href="/support" className="hover:text-white transition-colors">CATALOGS</Link></li>
+              <li><Link href="/support" className="hover:text-white transition-colors">SERVICES</Link></li>
             </ul>
           </div>
 
@@ -76,9 +78,9 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <h3 className="text-white text-xs font-bold uppercase mb-3 tracking-wider">CONTACTS</h3> 
             <ul className="space-y-1.5 text-xs">
-              <li><a href="/contact" className="hover:text-white transition-colors">INTERNATIONAL</a></li>
-              <li><a href="/contact" className="hover:text-white transition-colors">MEDIA & PRESS</a></li>
-              <li><a href="/contact" className="hover:text-white transition-colors">HQ</a></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">INTERNATIONAL</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">MEDIA & PRESS</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">HQ</Link></li>
             </ul>
           </div>
         </div>
@@ -88,18 +90,19 @@ const Footer = () => {
 
         {/* Terms & Legal */}
         <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-2 sm:space-y-0">
-          {/* 🎯 2. Replaced <p> with <Link> and added href */}
           <Link 
             href="/terms-and-conditions" 
             className="text-gray-500 hover:text-white transition-colors"
           >
             Terms & Condition
           </Link>
-          <p className="text-gray-500 hover:text-white transition-colors cursor-pointer">Legal Terms</p>
+          {/* --- Also changed this to a Link as good practice --- */}
+          <Link href="/legal" className="text-gray-500 hover:text-white transition-colors">Legal Terms</Link>
         </div>
       </motion.div>
     </footer>
   );
 };
 
+// This default export is correct and crucial for avoiding the error you saw earlier.
 export default Footer;
