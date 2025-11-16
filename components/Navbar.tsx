@@ -72,8 +72,11 @@ const Navbar = () => {
         Changed 'lg:px-4' back to 'lg:px-8' to add more padding on large screens.
       */}
       <div className="flex justify-between items-center px-4 sm:px-6 lg:px-8 h-20">
-        {/* Logo */}
-        <div className="flex-shrink-0 flex items-center">
+        
+        {/* --- MODIFICATION HERE ---
+          The wrapper 'div' was replaced with a 'Link' component.
+        */}
+        <Link href="/" className="flex-shrink-0 flex items-center">
            <Image
              src="/sssdefence_logo.png"
              alt="SSS Defence Logo"
@@ -82,7 +85,7 @@ const Navbar = () => {
              className="h-7 md:h-10 w-auto"
              priority
            />
-        </div>
+        </Link>
 
         {/* Desktop Menu - Right Aligned */}
         <div className="hidden md:flex flex-grow items-center justify-end">
