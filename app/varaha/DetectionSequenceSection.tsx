@@ -76,7 +76,7 @@ const Loader: React.FC = () => (
 // ---------------- Landscape (GLTF) ----------------
 const Landscape: React.FC = () => {
   const { scene } = useGLTF(
-    "/military-landscape/military-landscape.gltf"
+    "/military-landscape/military-landscape.glb"
   ) as any;
   const copiedScene = useMemo(() => {
     const clone = scene.clone();
@@ -181,7 +181,7 @@ const Dome: React.FC<DomeProps> = ({ stage, ...props }) => {
 
 // ---------------- Drone ----------------
 const Drone: React.FC<{ stage: AnimationStage }> = ({ stage }) => {
-  const { scene } = useGLTF("/drone-3d-model/drone-3d-model.gltf") as any;
+  const { scene } = useGLTF("/drone-3d-model/drone-3d-model.glb") as any;
   const ref = useRef<THREE.Group | null>(null);
   const propellerRefs = useRef<THREE.Object3D[]>([]);
 
@@ -220,7 +220,7 @@ const Drone: React.FC<{ stage: AnimationStage }> = ({ stage }) => {
       visible={stage !== "destroyed"}
       frustumCulled
     >
-      <primitive object={scene} scale={4} castShadow />
+      <primitive object={scene} scale={5} castShadow />
       <pointLight
         color="red"
         intensity={1}

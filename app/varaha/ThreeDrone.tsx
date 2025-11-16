@@ -8,7 +8,7 @@ import * as THREE from "three"; // Import THREE for ref typing
 // This component loads the 3D model
 function DroneModel() {
   // ✅ Using the correct path you provided
-  const { scene } = useGLTF("/drone-3d-model/drone-3d-model.gltf");
+  const { scene } = useGLTF("/drone-3d-model/drone-3d-model.glb");
 
   // Create a ref for the model
   const modelRef = useRef<THREE.Group>(null!);
@@ -31,7 +31,7 @@ function DroneModel() {
       ref={modelRef}
       object={scene}
       // ✅ Adjusted scale and position to be viewable
-      scale={20}
+      scale={25}
       position={[0, 0, 0]}
     />
   );
